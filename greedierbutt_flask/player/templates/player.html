@@ -1,0 +1,225 @@
+{% extends "layout.html" %}
+
+{% block title %}{{ profile["personaname"] }}'s Page{% endblock %}
+
+{% block body %}
+
+<div class="container-fluid mt-4">
+    <div class="row justify-content-center">
+        <div class="col-sm-2 align-top">
+            <div class="card">
+                {% if not profile["avatarfull"] == None -%}
+                <img src="{{ profile["avatarfull"] }}" class="card-img-top" alt="{{ profile["personaname"] }}">
+                {% endif %}
+                <div class="card-body">
+                    <h3 class="card-text text-center">{{ profile["personaname"] }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <table class="table table-striped">
+                <tbody>
+                    <tr>
+                        <th colspan="2">
+                            <h4 class="text-center">All-time Results <span class="fs-6"><i class="bi bi-info-circle" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Excludes today's run"></i></span></h4>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th class="text-end">Total Daily Runs</th>
+                        <td>{{ profile["totaldailyruns_count"] }} ({{ profile["totalloggedruns_count"] }} with a logged score)</td>
+                    </tr>
+                    <tr>
+                        <th class="text-end">Wins</th>
+                        <td>{{ profile["totalwins_count"] }}
+                            {% if profile["totalwins_count"] > 0 -%}
+                            (Win percentage: {{ "%2.2f%%" % (profile["win_percentage"]) }})
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="text-end">Average Score Rank</th>
+                        <td>
+                            {% if profile["avg_scorerank"] == None -%}
+                            Disqualified
+                            {% else %}
+                            {{ "%d" % profile["avg_scorerank"] }}
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="text-end">Average Time Rank</th>
+                        <td>
+                            {% if profile["avg_timerank"] == None -%}
+                            Disqualified
+                            {% else %}
+                            {{ "%d" % profile["avg_timerank"] }}
+                            {% endif %}
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <th class="text-end">Average Time</th>
+                        <td>
+                            {% if profile["avg_time"] == None -%}
+                            Disqualified
+                            {% else %}
+                            {{ (profile["avg_time"]/30)|format_time }}
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="text-end">Average Score</th>
+                        <td>
+                            {% if profile["avg_score"] == None -%}
+                            Disqualified
+                            {% else %}
+                            {{ "%d" % profile["avg_score"] }}
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="text-end">Best Score Rank</th>
+                        <td><a href="{{ url_for("score_bp.score", scoreid=profile["topscorerank_scoreid"]) }}">{% if profile["topscorerank_scorerank"] >= 999999 -%}Disqualified{% else %}{{ profile["topscorerank_scorerank"] }}{% endif %}</a></td>
+                    </tr>
+                    <tr>
+                        <th class="text-end">Best Time Rank</th>
+                        <td>
+                        {% if profile["toptimerank_scoreid"] == None -%}
+                            No wins on record.
+                        {% else %}
+                            <a href="{{ url_for("score_bp.score", scoreid=profile["toptimerank_scoreid"]) }}">{% if profile["toptimerank_timerank"] >= 999999 -%}Disqualified{% else %}{{ profile["toptimerank_timerank"] }}{% endif %} ({{ (profile["toptimerank_time"]/30)|format_time }} Lv {{ profile["toptimerank_level"] }})</a>
+                        {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="text-end">High Score</th>
+                        <td><a href="{{ url_for("score_bp.score", scoreid=profile["topscore_scoreid"]) }}">{{ profile["topscore_score"] }}</a></td>
+                    </tr>
+                    <tr>
+                        <th class="text-end">Fastest Time</th>
+                        <td>
+                        {% if profile["toptime_scoreid"] == None -%}
+                            No wins on record.
+                        {% else %}
+                            <a href="{{ url_for("score_bp.score", scoreid=profile["toptime_scoreid"]) }}">{{ (profile["toptime_time"]/30)|format_time }} (Lv {{ profile["toptime_level"] }})</a>
+                        {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="text-end">Best Winning Streak</th>
+                        <td>
+                        {% if profile["winstreak_length"] == None -%}
+                            No wins on record.
+                        {% else %}
+                            {{ profile["winstreak_length"] }} ( {{ profile["winstreak_startdate"]|format_streak_date }} to {{ profile["winstreak_enddate"]|format_streak_date }} )
+                        {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="text-end">Worst Losing Streak</th>
+                        <td>
+                        {% if profile["losestreak_length"] == None -%}
+                            No losses on record.
+                        {% else %}
+                            {{ profile["losestreak_length"] }} ( {{ profile["losestreak_startdate"]|format_streak_date }} to {{ profile["losestreak_enddate"]|format_streak_date }} )
+                        {% endif %}
+                    </td>
+                    </tr>
+                    {% if recentruns|filter_runs|length > 0 -%}
+                    <tr>
+                        <th colspan="2">
+                            <h4 class="text-center">Summary of {{recentruns|length}} most recent runs <span class="fs-6"><i class="bi bi-info-circle" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Averages exclude aborted (level 0) runs listed below"></i></span></h2>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th class="text-end">Submitted runs  <span class="fs-6"><i class="bi bi-info-circle" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Runs that include a time and level"></i></span></th>
+                        <td>{{ recentruns|filter_runs|length }}</td>
+                    </tr>
+                    <tr>
+                        <th class="text-end">Average Score Rank</th>
+                        <td>{{ recentruns|filter_runs|avg_dict_value("rank")|round|int }}</td>
+                    </tr>
+                    <tr>
+                        <th class="text-end">Average Time Rank</th>
+                        <td>{{ recentruns|filter_runs|avg_dict_value("timerank")|round|int }}</td>
+                    </tr>
+                    <tr>
+                        <th class="text-end">Average Score</th>
+                        <td>{{ recentruns|filter_runs|avg_dict_value("score")|round|int }}</td>
+                    </tr>
+                    <tr>
+                        <th class="text-end">Average Time</th>
+                        <td>{{ ((recentruns|filter_runs|avg_dict_value("time")|round)/30)|format_time }}</td>
+                    </tr>
+                    {% endif %}                                        
+                </tbody>
+            </table>
+            {% if recentruns|length > 0 %}
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th colspan="5">
+                            <h4 class="text-center">Results of {{recentruns|length}} most recent runs</h4>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>Date</th>
+                        <th class="text-center">Rank</th>
+                        <th class="text-center">Score</th>
+                        <th class="text-center">Time Rank</th>
+                        <th class="text-center">Time (Level)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in recentruns %}
+                    <tr>
+                        <th><a href="{{ url_for('score_bp.score', scoreid=row['scoreid'] )}}">{{ row['date']|format_streak_date }}</a></th>
+                        <td class="text-center">{{ row['rank'] }}</td>
+                        <td class="text-center">{{ row['score'] }}</td>
+                        <td class="text-center">{{ row['timerank'] }}</td>
+                        <td class="text-center">{{ (row['time']/30)|format_time }} (Lv {{ row['level'] }})</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% endif %}
+            {% if run_history != None and run_history|length > 0 and historyView == "full" %}
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th colspan="5">
+                            <h4 class="text-center">Results of all historical runs ({{run_history|length}})</h4>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>Date</th>
+                        <th class="text-center">Rank</th>
+                        <th class="text-center">Score</th>
+                        <th class="text-center">Time Rank</th>
+                        <th class="text-center">Time (Level)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in run_history %}
+                    <tr>
+                        <th><a href="{{ url_for('score_bp.score', scoreid=row['scoreid'] )}}">{{ row['date']|format_streak_date }}</a></th>
+                        <td class="text-center">{% if row['scorerank'] == 999999 -%}DQ {% else %}{{ row['scorerank'] }}{% endif %}</td>
+                        <td class="text-center">{{ row['score'] }}</td>
+                        <td class="text-center">{% if row['timerank'] == 999999 -%}DQ {% else %}{{ row['timerank'] }}{% endif %}</td>
+                        <td class="text-center">{{ (row['time']/30)|format_time }} (Lv {{ row['level'] }})</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="text-center">
+                <a href="{{ url_for('player_bp.player', steamid=profile["steamid"], historyView="full") }}" title="View Full History">
+                    <span class="btn btn-primary">View Full History</span>
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,67 @@
+{% extends "layout.html" %}
+
+{% block title %}{{lb_header_text}}{% endblock %}
+
+{% block body %}
+    <h1 class="text-center">
+        Isaac Daily Leaderboards
+    </h1>
+    <h2 class="text-center">{{ lb_header_text }} </h2>
+
+{% if results == None -%}
+    <div>Could not load the requested leaderboards.</div>
+{% else %}
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th class="text-center align-bottom">Rank</th>
+                    <th class="text-start align-bottom">Player</th>
+                    <th class="text-center align-bottom">Runs</th>
+                    <th class="text-center align-bottom">
+                        <a href="{{ url_for('daily_bp.top', leaderboard=leaderboard, sort='scores') }}">
+                            Score Percentile
+                            {% if sort == 'scores' -%}<i class="bi bi-sort-numeric-down align-middle" alt="Sorted by score rank"></i>{% endif %}
+                        </a>
+                    </th>
+                    <th class="text-center align-bottom">
+                        <a href="{{ url_for('daily_bp.top', leaderboard=leaderboard, sort='times') }}">
+                            Time Percentile
+                            {% if sort == 'times' -%}<i class="bi bi-sort-numeric-down align-middle" alt="Sorted by time rank"></i>{% endif %}
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in results %}
+                {% if player == row['steamid'] -%}
+                    {% set rowclass = 'table-active' %}
+                {% endif %}
+                <tr class="{{ rowclass }}">
+                    <td class="text-center align-middle">{{ row[orderBy] }}</td>
+                    <td class="align-middle cell-player">
+                        <a href="{{ url_for("player_bp.player", steamid=row["steamid"]) }}">
+                            {% if row["avatar"] != None -%}
+                            <img src="{{ row["avatar"] }}" alt="{{ row["player"]}} " class="rounded-circle">
+                            {% endif %}
+                            <span class=" align-middle">
+                                {{ row["player"] }}
+                            </span>
+                        </a>    
+                    </td>
+                    <td class="text-center align-middle col-sm-2">
+                        {{ row["entries"] }}
+                    </td>
+                    <td class="text-center align-middle col-sm-2">
+                        {{ '%2.2f'|format(row["avgscorepercentile"]) }}
+                    </td>
+                    <td class="text-center align-middle col-sm-2">
+                        {{ '%2.2f'|format(row["avgtimepercentile"]) }}
+                    </td>
+                </tr>
+                {% endfor %}    
+            </tbody>
+        </table>
+    </div>
+{% endif %}
+{% endblock %}

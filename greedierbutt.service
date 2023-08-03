@@ -1,0 +1,13 @@
+[Unit]
+Description=uWSGI instance to serve greedierbutt
+After=network.target
+
+[Service]
+User=greedierbutt
+Group=www-data
+WorkingDirector=/home/greedierbutt/gbflask
+Environment="PATH=/home/greedierbutt/gbflask/.venv/bin"
+ExecStart=/home/greedierbutt/gbflask/.venv/bin/uwsgi -H /home/greedierbutt/gbflask/.venv --ini greedierbutt.ini
+
+[Install]
+WantedBy=multi-user.target

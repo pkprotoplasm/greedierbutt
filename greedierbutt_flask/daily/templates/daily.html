@@ -1,0 +1,125 @@
+{% extends "layout.html" %}
+
+{% block title %}Daily {{ date.strftime('%m/%d/%Y') }}{% endblock %}
+
+{% block body %}
+    <h1 class="text-center">
+        Daily Scores for {{ date.strftime('%A %B %d, %Y') }}
+        <span id="date-picker input-group">
+            <button class="btn btn-secondary change-date" title="Change Date" type="button">
+                <svg class="bi bi-calendar-event" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M11 6.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1z"/>
+                    <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/>              
+                </svg>
+            </button>
+        </span>
+        <script>
+            $('.change-date').datepicker({
+                todayBtn: 'linked',
+                autoclose: true,
+                defaultViewDate: "{{ date.strftime('%m/%d/%Y') }}",
+                title: "Pick a day to go to...",
+                endDate: "{{ today.strftime('%m/%d/%Y') }}"
+            });
+
+            $('.change-date').datepicker('setDate', "{{ date.strftime('%m/%d/%Y') }}");
+            
+            $('.change-date').datepicker().on('changeDate', function(e) {
+                    window.location.href = `{{ url_for("daily_bp.daily") }}/${e.format(0, 'yyyymmdd')}/{% if orderBy == 'timerank' %}times{% else %}scores{% endif %}`;
+                });
+        </script>
+    </h1>
+    <h2 class="text-center">Goal: {{ goal }}</h2>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+{% if not userResult == None -%}
+            <thead>
+                <tr>
+                    <th class="text-end align-middle"></th>
+                    <th class="text-start align-middle" colspan="3">Your Result</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="text-center align-middle">{{ userResult[orderBy] }}</td>
+                    <td class="align-middle cell-player">
+                        <a href="{{ url_for("player_bp.player", steamid=userResult["steamid"]) }}">
+                            {% if userResult["avatar"] != None -%}
+                            <img src="{{ userResult["avatar"] }}" alt="{{ userResult["player"]}} " class="rounded-circle">
+                            {% endif %}
+                            <span class=" align-middle">
+                                {{ userResult["player"] }}
+                            </span>
+                        </a>    
+                    </td>                    
+                    <td class="text-center align-middle">
+                        <a href="{{ url_for("score_bp.score", scoreid=userResult["scoreid"]) }}">{{ userResult["score"] }}</a>
+                    </td>
+                    <td class="text-center align-middle">
+                        <a href="{{ url_for("score_bp.score", scoreid=userResult["scoreid"]) }}">
+                            {{ ((userResult["time"]|int)/30)|format_time }}
+                            <br class="d-md-none">
+                            (Lv {{ userResult["level"] }})<br>
+                            {{ userResult|get_badges|safe }}
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+{% endif %}
+            <thead>
+                <tr>
+                    <th class="text-center align-bottom">Rank</th>
+                    <th class="align-bottom">Player</th>
+                    <th class="text-center align-bottom">
+                        <a href="{{ url_for('daily_bp.daily', datearg=date.strftime('%Y%m%d'), rankby='scores') }}" alt="Sort by score rank">
+                            Score
+                            {% if orderBy == 'scorerank' -%}<i class="bi bi-sort-numeric-down align-middle" alt="Sorted by score rank"></i>{% endif %}
+                        </a>
+                    </th>
+                    <th class="text-center align-bottom">
+                        <a href="{{ url_for('daily_bp.daily', datearg=date.strftime('%Y%m%d'), rankby='times') }}" alt="Sort by time rank">
+                            Time
+                            {% if orderBy == 'timerank' -%}<i class="bi bi-sort-numeric-down align-middle" alt="Sorted by time rank"></i>{% endif %}
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in score_rows %}
+                {% if player == row['steamid'] -%}
+                    {% set rowclass = 'table-active' %}
+                {% endif %}
+                <tr class="{{ rowclass }}">
+                    <td class="text-center align-middle">{{ row[orderBy] }}</td>
+                    <td class="align-middle cell-player">
+                        <a href="{{ url_for("player_bp.player", steamid=row["steamid"]) }}">
+                            {% if row["avatar"] != None -%}
+                            <img src="{{ row["avatar"] }}" alt="{{ row["player"]}} " class="rounded-circle">
+                            {% endif %}
+                            <span class=" align-middle">
+                                {{ row["player"] }}
+                            </span>
+                        </a>    
+                    </td>
+                    <td class="text-center align-middle col-sm-2">
+                        <a href="{{ url_for("score_bp.score", scoreid=row["scoreid"]) }}">{{ row["score"] }}</a>
+                    </td>
+                    <td class="text-center align-middle col-sm-2">
+                        <a href="{{ url_for("score_bp.score", scoreid=row["scoreid"]) }}">
+                            {{ ((row["time"]|int)/30)|format_time }}
+                            <br class="d-md-none">
+                            (Lv {{ row["level"] }})<br>
+                            {{ row|get_badges|safe }}
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}    
+            </tbody>
+        </table>
+    </div>
+
+    <div class="container">
+        {{ pagination.links }}
+    </div>
+{% endblock %}

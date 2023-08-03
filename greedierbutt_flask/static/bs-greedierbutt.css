@@ -1,0 +1,172 @@
+@font-face {
+    font-family: Upheaval;
+    src:url("/static/upheavtt.ttf");
+}
+@font-face {
+    font-family: Silom;
+    src:url("/static/SilomBol.ttf");
+}
+@font-face {
+    font-family: Play;
+    src:url("/static/Play-Regular.ttf");
+}
+
+:root,
+[data-bs-theme="dark"] {
+    --bs-primary: #bf9221;
+    --bs-primary-rgb: 218,165,32;
+
+    --bs-link-color: var(--bs-primary);
+    --bs-link-color-rgb: var(--bs-primary-rgb);
+    --bs-link-hover-color: #ffff00;
+    --bs-link-hover-color-rgb: 255,255,0;
+    --bs-link-decoration: none;
+
+
+    --bs-body-bg: var(--bs-gray-900);
+    --bs-pagination-active-color: var(--bs-black);
+    --bs-pagination-active-bg: var(--bs-primary);
+    --bs-body-font-family: Play, var(--bs-font-sans-serif);
+    --bs-nav-link-color: var(--bs-gray-900);
+
+    --bs-ui-elem-hover-color: var(--bs-yellow);
+}
+
+.tooltip {
+    --bs-tooltip-bg: var(--bs-primary) !important;
+    --bs-tooltip-color: var(--bs-black) !important;
+}
+
+.navbar-tooltip {
+    --bs-tooltip-bg: var(--bs-body-bg) !important;
+    --bs-tooltip-color: var(--bs-body-color) !important;
+}
+
+.table tr {
+    --bs-table-active-bg: var(--bs-primary) !important;
+    --bs-table-active-color: var(--bs-black) !important;
+}
+
+.btn-primary {
+    --bs-btn-bg: var(--bs-primary);
+    --bs-btn-border-color: var(--bs-primary);
+    --bs-btn-color: var(--bs-black);
+
+    
+    --bs-btn-hover-bg: var(--bs-ui-elem-hover-color);
+    --bs-btn-hover-border-color: var(--bs-ui-elem-hover-color);
+    --bs-btn-hover-color: var(--bs-black);
+
+    --bs-btn-active-bg: var(--bs-ui-elem-hover-color);
+    --bs-btn-active-border-color: var(--bs-ui-elem-hover-color);
+    --bs-btn-active-color: var(--bs-black);
+
+    --bs-btn-disabled-bg: var(--bs-gray-900);
+    --bs-btn-disabled-border-color: var(--bs-gray-900);
+    --bs-btn-disabled-color: var(--bs-black);
+}
+
+.table-active:not(:hover) > * > a {
+    color: var(--bs-black) !important;
+}
+
+a { text-decoration: none; }
+
+.pagination {
+    --bs-pagination-active-bg: var(--bs-primary);
+    --bs-pagination-active-border-color: var(--bs-primary);
+    --bs-pagination-active-color: var(--bs-black);
+    justify-content: center;
+
+    --bs-pagination-focus-box-shadow: 0 0 0 .25rem rgba(var(--bs-primary-rgb),.25);
+}
+
+.cell-player {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    max-width: 0;
+    min-width: 125px;
+}
+
+.navbar {
+    --bs-navbar-color: var(--bs-black);
+    --bs-navbar-brand-font-size: 1.5rem;
+    --bs-navbar-toggler-border-color: var(--bs-black);
+}
+
+[data-bs-theme="dark"] .navbar-toggler-icon {
+	--bs-navbar-toggler-icon-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%280, 0, 0, 0.55%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+.dropdown-item.nav-link {
+    --bs-nav-link-color: var(--bs-primary);
+}
+
+.dropdown-item.nav-link:hover {
+    background-color: var(--bs-yellow);
+    --bs-nav-link-hover-color: var(--bs-black);
+}
+
+.nav-link.dropdown-toggle.show {
+    --bs-navbar-active-color: var(--bs-gray-700);
+}
+
+.nav-link {
+    --bs-nav-link-color: var(--bs-black);
+    --bs-nav-link-hover-color: var(--bs-gray-900);
+}
+
+.navbar-brand {
+    font-family: Upheaval;
+    --bs-navbar-brand-color: var(--bs-black);
+}
+
+.table {
+    --bs-table-hover-bg: var(--bs-gray-800);
+}
+
+.form-control:focus {
+    box-shadow: 0 0 0 .25rem rgba(var(--bs-link-hover-color-rgb),.25) !important;
+    border-color: var(--bs-link-hover-color);
+}
+
+.datepicker table tr td.day:hover, .datepicker tfoot tr th:hover,
+.datepicker .datepicker-switch:hover, .datepicker .prev:hover,
+.datepicker .next:hover, .datepicker table tr td span:hover,
+.datepicker table tr td span.focused, .datepicker table tr td.active.active {
+    background-color: var(--bs-primary) !important;
+    background-image: none !important;
+    color: var(--bs-black) !important;
+}
+
+.datepicker table tr td.active {
+    background-image: none !important;
+    background-color: var(--bs-yellow) !important;
+    color: var(--bs-black) !important;
+}
+
+.datepicker table tr td.today {
+    background-color: var(--bs-secondary) !important;
+    background-image: none !important;
+}
+
+.datepicker table tr td.disabled {
+    color: var(--bs-gray-800) !important;
+}
+
+.datepicker table tr td.disabled:hover {
+    background-color: none !important;
+}
+
+.datepicker::before, .datepicker::after {
+    display: none !important;
+}
+
+.bg-warning {
+    color: var(--bs-black) !important;
+}
+
+.bg-info {
+    color: var(--bs-black) !important;
+}

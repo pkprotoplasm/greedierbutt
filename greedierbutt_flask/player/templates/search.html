@@ -1,0 +1,47 @@
+{% extends "layout.html" %}
+
+{% block title %}Search Results{% endblock %}
+
+{% block body %}
+
+<h1 class="text-center">
+    Search Results <span class="fs-6 align-middle"><i class="bi bi-info-circle" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Up to 100 results shown"></i></span>
+</h1>
+
+{% if results == None -%}
+<div class="text-center">Couldn't find a player matching: {{ query }}</div>
+{% else %}
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th class="align-middle cell-player">Player</th>
+                <th class="text-center">Daily Entries</th>
+                <th class="text-center">Average Score Rank</th>
+                <th class="text-center">Average Time Rank</th>    
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in results %}
+            <tr>
+                <td class="align-middle cell-player">
+                    <a href="{{ url_for('player_bp.player', steamid=row['steamid']) }}">
+                        {% if row["avatar"] != None -%}
+                        <img src="{{ row["avatar"] }}" alt="{{ row["player"]}} " class="rounded-circle">
+                        {% endif %}
+                        <span class=" align-middle">
+                            {{ row["player"] }}
+                        </span>
+                    </a>
+                </td>
+                <td class="text-center">{{ row['entries'] }}</td>
+                <td class="text-center">{{ row['avg_rank']|round }}</td>
+                <td class="text-center">{{ row['avg_timerank']|round }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+
+{% endblock %}

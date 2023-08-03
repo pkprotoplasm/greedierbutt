@@ -12,7 +12,7 @@ sys.path.append(path.dirname(path.realpath(__file__)))
 
 from config import Config
 
-mysqlpass=Config.MYSQL_PASSWORD
+mysqlpass=Config.MYSQL_WRITE_PASSWORD
 mysqldb=Config.MYSQL_DB
 
 greedierdb = MySQLdb.connect(passwd=mysqlpass, db=mysqldb, cursorclass = MySQLdb.cursors.SSCursor, connect_timeout=10)

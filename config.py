@@ -21,6 +21,7 @@ class Config:
     MYSQL_DB = environ.get("MYSQL_DB")
     MYSQL_USER = environ.get("MYSQL_USER")
     MYSQL_PASSWORD = environ.get("MYSQL_PASSWORD")
+    MYSQL_WRITE_PASSWORD = environ.get("MYSQL_WRITE_PASSWORD")
 
     CACHE_TYPE = environ.get("CACHE_TYPE")
     CACHE_DEFAULT_TIMEOUT = environ.get("CACHE_DEFAULT_TIMEOUT")

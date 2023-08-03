@@ -11,7 +11,7 @@ sys.path.append(path.dirname(path.realpath(__file__)))
 
 from config import Config
 
-mysqlpass=Config.MYSQL_PASSWORD
+mysqlpass=Config.MYSQL_WRITE_PASSWORD
 mysqldb=Config.MYSQL_DB
 
 if (len(sys.argv)-1) == 1:

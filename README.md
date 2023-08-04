@@ -31,3 +31,8 @@ This code is not fully complete. A functional site is/was running on greedierbut
 
 ## License
 GNU General Public License version 3.
+
+## Inspirations
+- Greed Butt by europa
+- IsaacScores by anonymous
+- The Binding of Isaac: Afterbirth, Afterbirth+, and Repentance, by Edmund McMillen

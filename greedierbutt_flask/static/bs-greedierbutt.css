@@ -170,3 +170,9 @@ a { text-decoration: none; }
 .bg-info {
     color: var(--bs-black) !important;
 }
+
+@media (min-width: 1199.98px) {
+    #daily-table {
+        max-width: 60%;
+    }
+}

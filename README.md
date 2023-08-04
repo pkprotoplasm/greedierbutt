@@ -13,7 +13,7 @@ After pulling the repository to your machine, you'll need to take the following 
 - Change to the repository directory, e.g. `cd ~/gbflask`
 - Install venv for python: `pip install venv`
 - Create a virtual environment: `python -m venv .venv`
-- Activate the virtual environment: `. .venv/bin/active` (be mindful of the docs)
+- Activate the virtual environment: `. .venv/bin/activate` (be mindful of the docs)
 - Install python dependencies: `pip install -r requirements.txt`
 - Use mysqlrestore or another database schema ingestion tool to load `scripts/mysql-structure.sql`
 - Set up cron jobs to run the bash scripts (`*.sh`) in `scripts` on your desired schedule

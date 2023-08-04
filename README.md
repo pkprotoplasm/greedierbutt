@@ -21,4 +21,13 @@ After pulling the repository to your machine, you'll need to take the following 
 - Enable the service: `systemctl --user enable greedierbutt.service`
 - As root, enable linger for the greedierbutt user: `# loginctl enable-linger greedierbutt`
 
-Please note that this code is not fully complete and development may or may not continue.
+## Configuration
+All configuration is done via the `.env` file. An example has been provided in `.env.example`.
+
+It is *strongly recommended* that you set up a SQL user with reduced privileges for the web frontend. The backend scripts will do the heavy lifting on the scores table; the frontend only needs write access to certain limited fields. Using a reduced-privilege user for the frontend's access will help mitigate any potential future SQL injection vulnerabilities.
+
+## Please note
+This code is not fully complete. A functional site is/was running on greedierbutt.com with this exact code, however additional features were planned and have not been implemented.
+
+## License
+GNU General Public License version 3.

@@ -260,6 +260,40 @@ CREATE TABLE `reports_staging` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Temporary table structure for view `score_history`
+--
+
+DROP TABLE IF EXISTS `score_history`;
+/*!50001 DROP VIEW IF EXISTS `score_history`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE VIEW `score_history` AS SELECT
+ 1 AS `player`,
+  1 AS `avatar`,
+  1 AS `scoreid`,
+  1 AS `date`,
+  1 AS `steamid`,
+  1 AS `scorerank`,
+  1 AS `timerank`,
+  1 AS `score`,
+  1 AS `stage_bonus`,
+  1 AS `exploration_bonus`,
+  1 AS `schwag_bonus`,
+  1 AS `rush_bonus`,
+  1 AS `bluebaby_bonus`,
+  1 AS `lamb_bonus`,
+  1 AS `megasatan_bonus`,
+  1 AS `damage_penalty`,
+  1 AS `hits_taken`,
+  1 AS `time_penalty`,
+  1 AS `item_penalty`,
+  1 AS `level`,
+  1 AS `time`,
+  1 AS `goal`,
+  1 AS `dlc` */;
+SET character_set_client = @saved_cs_client;
+
+--
 -- Table structure for table `scores`
 --
 
@@ -306,7 +340,7 @@ CREATE TABLE `scores` (
   KEY `idx_date_scorerank` (`date`,`scorerank`),
   KEY `idx_dlc` (`dlc`),
   KEY `idx_date_dlc` (`date`,`dlc`)
-) ENGINE=InnoDB AUTO_INCREMENT=426429711 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=426451790 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1051,6 +1085,24 @@ DELIMITER ;
 /*!50001 SET collation_connection      = @saved_col_connection */;
 
 --
+-- Final view structure for view `score_history`
+--
+
+/*!50001 DROP VIEW IF EXISTS `score_history`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb4 */;
+/*!50001 SET character_set_results     = utf8mb4 */;
+/*!50001 SET collation_connection      = utf8mb4_unicode_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`greedierbutt`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `score_history` AS select `p`.`personaname` AS `player`,`p`.`avatar` AS `avatar`,`s`.`scoreid` AS `scoreid`,`s`.`date` AS `date`,`s`.`steamid` AS `steamid`,`s`.`scorerank` AS `scorerank`,`s`.`timerank` AS `timerank`,`s`.`score` AS `score`,`s`.`stage_bonus` AS `stage_bonus`,`s`.`exploration_bonus` AS `exploration_bonus`,`s`.`schwag_bonus` AS `schwag_bonus`,`s`.`rush_bonus` AS `rush_bonus`,`s`.`bluebaby_bonus` AS `bluebaby_bonus`,`s`.`lamb_bonus` AS `lamb_bonus`,`s`.`megasatan_bonus` AS `megasatan_bonus`,`s`.`damage_penalty` AS `damage_penalty`,`s`.`hits_taken` AS `hits_taken`,`s`.`time_penalty` AS `time_penalty`,`s`.`item_penalty` AS `item_penalty`,`s`.`level` AS `level`,`s`.`time` AS `time`,`s`.`goal` AS `goal`,`s`.`dlc` AS `dlc` from (`profiles` `p` join `scores` `s` on(`p`.`steamid` = `s`.`steamid`)) order by `s`.`date` desc,`p`.`personaname` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
 -- Final view structure for view `scores_ranked`
 --
 
@@ -1077,4 +1129,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-08-05  2:02:25
+-- Dump completed on 2023-08-05  2:31:48

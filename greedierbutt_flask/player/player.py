@@ -58,14 +58,6 @@ def filter_runs(dict_object):
 def player(steamid, historyView="none"):
     startTime = datetime.now()
 
-    daily_view = f"alldaily_scores_{g.dlc}" # get_dlc() is SQL safe
-    if g.dlc == "abp":
-        daily_table = "scoresabp"
-    elif g.dlc == "ab":
-        daily_table = "scoresab"
-    else:
-        daily_table = "scoresr"
-
     # Check for cached player page. Fetch if there's no cached version.
     cacheKeyProfile = f"{g.dlc}/player/{steamid}/profile"
     cacheKeyRecentRuns = f"{g.dlc}/player/{steamid}/recentruns"

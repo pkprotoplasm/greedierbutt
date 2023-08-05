@@ -340,7 +340,7 @@ CREATE TABLE `scores` (
   KEY `idx_date_scorerank` (`date`,`scorerank`),
   KEY `idx_dlc` (`dlc`),
   KEY `idx_date_dlc` (`date`,`dlc`)
-) ENGINE=InnoDB AUTO_INCREMENT=426451790 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=426511368 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -950,18 +950,18 @@ DELIMITER ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 SET sql_mode              = 'IGNORE_SPACE,STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `SearchPlayersByName` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8 */ ;
-/*!50003 SET character_set_results = utf8 */ ;
-/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
 DELIMITER ;;
-CREATE DEFINER=`greedierbutt`@`localhost` PROCEDURE `SearchPlayersByName`(IN scores_table varchar(50), IN player_NAME VARCHAR(8000))
+CREATE DEFINER=`greedierbutt`@`localhost` PROCEDURE `SearchPlayersByName`(IN dlc varchar(50), IN player_NAME VARCHAR(8000))
 BEGIN
-    SET @scores = scores_table;
+    SET @dlc = dlc;
     SET @player = player_name;
 
     SET @sql_text = CONCAT('
@@ -969,11 +969,12 @@ BEGIN
             p.personaname as player,
             p.avatar as avatar,
             count(s.scoreid) as entries,
-            avg(s.rank) as avg_rank,
+            avg(s.scorerank) as avg_rank,
             avg(s.timerank) as avg_timerank
-        from ',@scores,' s
+        from scores s
             left join profiles p on s.steamid = p.steamid
         where p.personaname LIKE "%',@player,'%"
+        and s.dlc="',@dlc,'"
         group by s.steamid
         order by count(s.scoreid) desc
         limit 100
@@ -990,18 +991,18 @@ DELIMITER ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 SET sql_mode              = 'IGNORE_SPACE,STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `SearchPlayersBySteamID` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8 */ ;
-/*!50003 SET character_set_results = utf8 */ ;
-/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
 DELIMITER ;;
-CREATE DEFINER=`greedierbutt`@`localhost` PROCEDURE `SearchPlayersBySteamID`(IN scores_table varchar(50), IN player_steamid BIGINT)
+CREATE DEFINER=`greedierbutt`@`localhost` PROCEDURE `SearchPlayersBySteamID`(IN dlc varchar(50), IN player_steamid BIGINT)
 BEGIN
-    SET @scores = scores_table;
+    SET @dlc = dlc;
     SET @player = player_steamid;
 
     SET @sql_text = CONCAT('
@@ -1009,11 +1010,12 @@ BEGIN
             p.personaname as player,
             p.avatar as avatar,
             count(s.scoreid) as entries,
-            avg(s.rank) as avg_rank,
+            avg(s.scorerank) as avg_rank,
             avg(s.timerank) as avg_timerank
-        from ',@scores,' s
+        from scores s
             left join profiles p on s.steamid = p.steamid
-        where p.personaname LIKE "%',@player,'%"
+        where s.steamid="',@player,'"
+        and s.dlc="',@dlc,'"
         group by s.steamid
         order by count(s.scoreid) desc
         limit 100
@@ -1129,4 +1131,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-08-05  2:31:48
+-- Dump completed on 2023-08-05  3:44:11

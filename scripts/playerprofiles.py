@@ -47,7 +47,7 @@ if len(sys.argv) > 1 and sys.argv[1] == "all":
 else:
     # No args on the 10-minute interval invocation. Grabs today and yesterday's unique players. Tends to be between 10-20k (100-200 API calls per run or up to 30k API calls per day).
     # Limit to 30,000 per invocation to be safe (up to 43,200 API calls in a day).
-    profilecursor.execute("""with activeplayers as (select distinct steamid from scoresunion where date=%s or date=%s) select distinct p.steamid from profiles p, activeplayers a where p.steamid=a.steamid and (p.lastupdate < now() - interval 1 hour or p.personaname='Unknown User') order by rand() limit 30000""", (todaysDate.strftime("%Y%m%d"), yesterdaysDate.strftime("%Y%m%d")))
+    profilecursor.execute("""with activeplayers as (select distinct steamid from scores where date=%s or date=%s) select distinct p.steamid from profiles p, activeplayers a where p.steamid=a.steamid and (p.lastupdate < now() - interval 1 hour or p.personaname='Unknown User') order by rand() limit 30000""", (todaysDate.strftime("%Y%m%d"), yesterdaysDate.strftime("%Y%m%d")))
 
 profileRows = profilecursor.fetchall()
 

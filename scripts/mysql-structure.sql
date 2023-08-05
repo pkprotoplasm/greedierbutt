@@ -16,105 +16,6 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Temporary table structure for view `alldaily_scores_ab`
---
-
-DROP TABLE IF EXISTS `alldaily_scores_ab`;
-/*!50001 DROP VIEW IF EXISTS `alldaily_scores_ab`*/;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-/*!50001 CREATE VIEW `alldaily_scores_ab` AS SELECT
- 1 AS `player`,
-  1 AS `avatar`,
-  1 AS `scoreid`,
-  1 AS `date`,
-  1 AS `steamid`,
-  1 AS `scorerank`,
-  1 AS `timerank`,
-  1 AS `score`,
-  1 AS `stage_bonus`,
-  1 AS `exploration_bonus`,
-  1 AS `schwag_bonus`,
-  1 AS `rush_bonus`,
-  1 AS `bluebaby_bonus`,
-  1 AS `lamb_bonus`,
-  1 AS `megasatan_bonus`,
-  1 AS `damage_penalty`,
-  1 AS `hits_taken`,
-  1 AS `time_penalty`,
-  1 AS `item_penalty`,
-  1 AS `level`,
-  1 AS `time`,
-  1 AS `goal` */;
-SET character_set_client = @saved_cs_client;
-
---
--- Temporary table structure for view `alldaily_scores_abp`
---
-
-DROP TABLE IF EXISTS `alldaily_scores_abp`;
-/*!50001 DROP VIEW IF EXISTS `alldaily_scores_abp`*/;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-/*!50001 CREATE VIEW `alldaily_scores_abp` AS SELECT
- 1 AS `player`,
-  1 AS `avatar`,
-  1 AS `scoreid`,
-  1 AS `date`,
-  1 AS `steamid`,
-  1 AS `scorerank`,
-  1 AS `timerank`,
-  1 AS `score`,
-  1 AS `stage_bonus`,
-  1 AS `exploration_bonus`,
-  1 AS `schwag_bonus`,
-  1 AS `rush_bonus`,
-  1 AS `bluebaby_bonus`,
-  1 AS `lamb_bonus`,
-  1 AS `megasatan_bonus`,
-  1 AS `damage_penalty`,
-  1 AS `hits_taken`,
-  1 AS `time_penalty`,
-  1 AS `item_penalty`,
-  1 AS `level`,
-  1 AS `time`,
-  1 AS `goal` */;
-SET character_set_client = @saved_cs_client;
-
---
--- Temporary table structure for view `alldaily_scores_rep`
---
-
-DROP TABLE IF EXISTS `alldaily_scores_rep`;
-/*!50001 DROP VIEW IF EXISTS `alldaily_scores_rep`*/;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-/*!50001 CREATE VIEW `alldaily_scores_rep` AS SELECT
- 1 AS `player`,
-  1 AS `avatar`,
-  1 AS `scoreid`,
-  1 AS `date`,
-  1 AS `steamid`,
-  1 AS `scorerank`,
-  1 AS `timerank`,
-  1 AS `score`,
-  1 AS `stage_bonus`,
-  1 AS `exploration_bonus`,
-  1 AS `schwag_bonus`,
-  1 AS `rush_bonus`,
-  1 AS `bluebaby_bonus`,
-  1 AS `lamb_bonus`,
-  1 AS `megasatan_bonus`,
-  1 AS `damage_penalty`,
-  1 AS `hits_taken`,
-  1 AS `time_penalty`,
-  1 AS `item_penalty`,
-  1 AS `level`,
-  1 AS `time`,
-  1 AS `goal` */;
-SET character_set_client = @saved_cs_client;
-
---
 -- Table structure for table `badgeinfo`
 --
 
@@ -167,19 +68,6 @@ CREATE TABLE `curated` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Temporary table structure for view `dailylb_entries_rep`
---
-
-DROP TABLE IF EXISTS `dailylb_entries_rep`;
-/*!50001 DROP VIEW IF EXISTS `dailylb_entries_rep`*/;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-/*!50001 CREATE VIEW `dailylb_entries_rep` AS SELECT
- 1 AS `entries`,
-  1 AS `date` */;
-SET character_set_client = @saved_cs_client;
 
 --
 -- Temporary table structure for view `lb_100_ab`
@@ -341,7 +229,7 @@ CREATE TABLE `reports` (
   KEY `idx_processed` (`processed`),
   KEY `idx_reporter` (`reporter`),
   KEY `idx_reviewer` (`reviewer`)
-) ENGINE=InnoDB AUTO_INCREMENT=689 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=691 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -370,40 +258,6 @@ CREATE TABLE `reports_staging` (
   KEY `idx_reviewer` (`reviewer`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Temporary table structure for view `score_history`
---
-
-DROP TABLE IF EXISTS `score_history`;
-/*!50001 DROP VIEW IF EXISTS `score_history`*/;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-/*!50001 CREATE VIEW `score_history` AS SELECT
- 1 AS `player`,
-  1 AS `avatar`,
-  1 AS `scoreid`,
-  1 AS `date`,
-  1 AS `steamid`,
-  1 AS `scorerank`,
-  1 AS `timerank`,
-  1 AS `score`,
-  1 AS `stage_bonus`,
-  1 AS `exploration_bonus`,
-  1 AS `schwag_bonus`,
-  1 AS `rush_bonus`,
-  1 AS `bluebaby_bonus`,
-  1 AS `lamb_bonus`,
-  1 AS `megasatan_bonus`,
-  1 AS `damage_penalty`,
-  1 AS `hits_taken`,
-  1 AS `time_penalty`,
-  1 AS `item_penalty`,
-  1 AS `level`,
-  1 AS `time`,
-  1 AS `goal`,
-  1 AS `dlc` */;
-SET character_set_client = @saved_cs_client;
 
 --
 -- Table structure for table `scores`
@@ -452,7 +306,7 @@ CREATE TABLE `scores` (
   KEY `idx_date_scorerank` (`date`,`scorerank`),
   KEY `idx_dlc` (`dlc`),
   KEY `idx_date_dlc` (`date`,`dlc`)
-) ENGINE=InnoDB AUTO_INCREMENT=425217164 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=426429711 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1213,23 +1067,6 @@ DELIMITER ;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
-
---
--- Final view structure for view `scoresunion`
---
-
-/*!50001 DROP VIEW IF EXISTS `scoresunion`*/;
-/*!50001 SET @saved_cs_client          = @@character_set_client */;
-/*!50001 SET @saved_cs_results         = @@character_set_results */;
-/*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = utf8mb4 */;
-/*!50001 SET character_set_results     = utf8mb4 */;
-/*!50001 SET collation_connection      = utf8mb4_unicode_ci */;
-/*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`greedierbutt`@`localhost` SQL SECURITY DEFINER */
-/*!50001 SET character_set_client      = @saved_cs_client */;
-/*!50001 SET character_set_results     = @saved_cs_results */;
-/*!50001 SET collation_connection      = @saved_col_connection */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -1240,4 +1077,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-08-03 16:57:17
+-- Dump completed on 2023-08-05  2:02:25

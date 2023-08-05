@@ -53,6 +53,10 @@ daily_bp = Blueprint(
 )
 
 @app.template_filter()
+def date_add(dateArg, dayCount):
+    return (dateArg + timedelta(days=dayCount))
+
+@app.template_filter()
 def get_badges(row):
     badges = []
     badgeMarkup = []

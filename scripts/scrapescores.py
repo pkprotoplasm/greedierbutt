@@ -151,53 +151,6 @@ for record in insertList[:-1]: #[::-1]:
     
     greediercursor.execute("""
         INSERT INTO
-            """+destTable+"""
-            (
-                date,
-                scorekey,
-                steamid,
-                rank,
-                scorerank,
-                timerank,
-                score,
-                stage_bonus,
-                exploration_bonus,
-                schwag_bonus,
-                rush_bonus,
-                bluebaby_bonus,
-                lamb_bonus,
-                megasatan_bonus,
-                damage_penalty,
-                time_penalty,
-                item_penalty,
-                level,
-                time,
-                goal,
-                details,
-                shortenedline)
-            VALUES(%s, %s, %s, %s, 0, 0, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-            ON DUPLICATE KEY UPDATE
-                rank=%s,
-                score=%s,
-                stage_bonus=%s,
-                exploration_bonus=%s,
-                schwag_bonus=%s,
-                rush_bonus=%s,
-                bluebaby_bonus=%s,
-                lamb_bonus=%s,
-                megasatan_bonus=%s,
-                damage_penalty=%s,
-                time_penalty=%s,
-                item_penalty=%s,
-                level=%s,
-                time=%s,
-                goal=%s,
-                details=%s,
-                shortenedline=%s
-        """, record)
-    
-    greediercursor.execute("""
-        INSERT INTO
             scores
             (
                 date,
@@ -293,8 +246,8 @@ for profile in steamIDList:
 for profile in banList:
     greediercursor.execute("""INSERT INTO profiles (steamid, blacklisted, blacklisted_by, blacklisted_reason, blacklisted_date) VALUES(%s, true, 0, %s, TIMESTAMP(NOW())) ON DUPLICATE KEY UPDATE blacklisted=true, blacklisted_by=0, blacklisted_reason=%s""", (profile[0], profile[1], profile[1]))
 
-greediercursor.execute("""UPDATE metadata SET activeplayercount=(SELECT COUNT(DISTINCT steamid) FROM """+destTable+""" WHERE scorerank<999999 AND scorerank>0 AND goal>0)""")
-greediercursor.execute("""UPDATE metadata SET scorelinecount=(SELECT COUNT(scoreid) FROM scoresab)+(SELECT COUNT(scoreid) FROM scoresabp)+(SELECT COUNT(scoreid) FROM scoresr)""")
+greediercursor.execute("""UPDATE metadata SET activeplayercount=(SELECT COUNT(DISTINCT steamid) FROM scores WHERE scorerank<999999 AND scorerank>0 AND goal>0)""")
+greediercursor.execute("""UPDATE metadata SET scorelinecount=(SELECT COUNT(scoreid) FROM scores)""")
 greedierdb.commit()
 greedierdb.close()
 

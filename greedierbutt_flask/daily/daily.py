@@ -140,7 +140,7 @@ def daily(datearg="0", rankby="scores", arg3="1"):
     if cache.has(cacheKey):
         rows = cache.get(cacheKey)
     else:                
-        g.cursor.execute("SELECT * FROM scores_ranked WHERE date=%s AND dlc=%s ORDER BY "+("timerow" if orderBy == "timerank" else "scorerow")+" ASC", [datearg, g.dlc])
+        g.cursor.execute(f"SELECT * FROM scores_ranked WHERE date=%s AND dlc=%s ORDER BY {'timerow' if orderBy == 'timerank' else 'scorerow'} ASC", [datearg, g.dlc])
         rows = g.cursor.fetchall()
         cache.set(cacheKey, rows, timeout=60)
 

@@ -35,8 +35,8 @@
                     </a>
                 </td>
                 <td class="text-center">{{ row['entries'] }}</td>
-                <td class="text-center">{{ row['avg_rank']|round }}</td>
-                <td class="text-center">{{ row['avg_timerank']|round }}</td>
+                <td class="text-center">{{ {999999: "Disqualified"}[row['avg_rank']|round] | default(row['avg_rank']|round) }}</td>
+                <td class="text-center">{{ {999999: "Disqualified"}[row['avg_timerank']|round] | default(row['avg_timerank']|round) }}</td>
             </tr>
             {% endfor %}
         </tbody>

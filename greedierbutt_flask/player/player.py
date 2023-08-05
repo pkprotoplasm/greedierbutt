@@ -100,23 +100,16 @@ def player(steamid, historyView="none"):
 @player_bp.route("/search", strict_slashes=False, methods=['GET', 'POST'])
 def search():
     try:
-        # Determine which table to search on. This is used on a join to the profiles table to determine how active matching players are.
-        if g.dlc == "abp":
-            daily_table = "scoresabp"
-        elif g.dlc == "ab":
-            daily_table = "scoresab"
-        else:
-            daily_table = "scoresr"
-
         # Call prepared database statement depending on which type of input was given.
         if len(request.form['player']) == 17 and request.form['player'].isdigit():
-            g.cursor.execute("CALL SearchPlayersBySteamID(%s, %s)", [daily_table, request.form['player']])
+            g.cursor.execute("CALL SearchPlayersBySteamID(%s, %s)", [g.dlc, request.form['player']])
         elif len(request.form['player']) > 2:
-            g.cursor.execute("CALL SearchPlayersByName(%s, %s)", [daily_table, request.form['player']])
+            g.cursor.execute("CALL SearchPlayersByName(%s, %s)", [g.dlc, request.form['player']])
         else:
             flash('Please enter at least three characters in the search box.', 'error')
         results = g.cursor.fetchall()
     except Exception as e:
+        logger.error(e)
         results=None
 
     try:

@@ -11,7 +11,8 @@
         {% set prevDate = date|date_add(-1) %}
         {% set nextDate = date|date_add(1) %}
         <a href="{{ url_for('daily_bp.daily', datearg=prevDate.strftime('%Y%m%d'), rankby={'scorerank': 'scores', 'timerank': 'times'}[orderBy]) }}" title="Go to {{ prevDate.strftime('%A %B %d, %Y') }}"><i class="bi bi-caret-left-fill"></i></a>
-        {{ date.strftime('%A %B %d, %Y') }}
+        <span class="d-none d-lg-inline">{{ date.strftime('%A %B %d, %Y') }}</span>
+        <span class="d-lg-none">{{ date.strftime('%a %b %d, %Y') }}</span>
         <span id="date-picker input-group">
             <button class="btn btn-secondary change-date" title="Change Date" type="button">
                 <svg class="bi bi-calendar-event" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">

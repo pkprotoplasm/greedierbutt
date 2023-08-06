@@ -11,10 +11,10 @@
         {% set prevDate = date|date_add(-1) %}
         {% set nextDate = date|date_add(1) %}
         <a href="{{ url_for('daily_bp.daily', datearg=prevDate.strftime('%Y%m%d'), rankby={'scorerank': 'scores', 'timerank': 'times'}[orderBy]) }}" title="Go to {{ prevDate.strftime('%A %B %d, %Y') }}"><i class="bi bi-caret-left-fill"></i></a>
-        <span class="d-none d-lg-inline">{{ date.strftime('%A %B %d, %Y') }}</span>
-        <span class="d-lg-none">{{ date.strftime('%a %b %d, %Y') }}</span>
-        <span id="date-picker input-group">
-            <button class="btn btn-secondary change-date" title="Change Date" type="button">
+        <span id="date-picker input-group" class="align-text-bottom">
+            <button class="btn btn-link fs-2 change-date align-middle" title="Change Date" type="button">
+                <span class="d-none d-lg-inline">{{ date.strftime('%A %B %d, %Y') }}</span>
+                <span class="d-lg-none">{{ date.strftime('%a %b %d, %Y') }}</span>
                 <svg class="bi bi-calendar-event" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
                     <path d="M11 6.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1z"/>
                     <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/>              

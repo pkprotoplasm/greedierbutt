@@ -176,3 +176,9 @@ a { text-decoration: none; }
         max-width: 60%;
     }
 }
+
+.change-date {
+    text-decoration-line: none !important;
+    border: 0px !important;
+    margin-top: -6px !important;
+}

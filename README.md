@@ -29,6 +29,13 @@ It is *strongly recommended* that you set up a SQL user with reduced privileges 
 ## Please note
 This code is not fully complete. A functional site is/was running on greedierbutt.com with this exact code, however additional features were planned and have not been implemented.
 
+## What's missing
+There is currently no administration console. All administration (such as unbanning users, adding/removing moderators, and removing any data from the database) must be done via SQL.
+
+Moderator and admin privileges are controlled by the `profiles` table's `moderator` and `admin` boolean columns, respectively.
+
+User bans are controlled by the `profiles` table's `blacklisted` column. Ban metadata is provided in the table's `blacklisted_by`, `blacklisted_reason`, and `blacklisted_date` columns. Banned users will have the values in the `scores` table's `scorerank` and `timerank` columns hardcoded to `999999`. This provides fast indexed identification of bans in queries. When unbanning a user, the admin should recalculate ranks on all dates the player had participated in.
+
 ## License
 GNU General Public License version 3.
 

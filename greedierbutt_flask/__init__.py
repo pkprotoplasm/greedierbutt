@@ -1,19 +1,17 @@
-import os
-
 from flask import Flask
 from flask import g
-from flask import request
 from flask_mysqldb import MySQL
 from flask_caching import Cache
 
-from celery import Celery, Task
+from celery import Celery
+from celery_singleton import Singleton
+from celery.schedules import crontab
+from kombu import Exchange, Queue
 
-import re
 from datetime import timedelta
 
-from config import Config
-
 dbConn = MySQL()
+celery = Celery()
 cache = Cache()
 
 # strptime filter for templates
@@ -35,18 +33,6 @@ def is_moderator(steamid):
     except:
         return False
     
-# Starter celery_init_app code from Flask documentation.
-def celery_init_app(app: Flask) -> Celery:
-    class FlaskTask(Task):
-        def __call__(self, *args: object, **kwargs: object) -> object:
-            with app.app_context():
-                return self.run(*args, **kwargs)
-            
-    celery_app = Celery(app.name, task_cls=FlaskTask)
-    celery_app.config_from_object(app.config["CELERY"])
-    celery_app.set_default()
-    app.extensions["celery"] = celery_app
-    return celery_app
 
 def init_app(test_config=None) -> Flask:
 
@@ -58,19 +44,38 @@ def init_app(test_config=None) -> Flask:
     app.secret_key = app.config["SECRET_KEY"]
     app.config["SESSION_PERMANENT"] = True
 
-    app.config['MYSQL_DATABASE_CHARSET'] = 'utf8mb4'
-
     app.config.from_mapping(
         CELERY=dict(
-            broker_url="redis://localhost",
-            result_backend="redis://localhost",
-            task_ignore_result=True
+            broker_url=app.config["CELERY_BROKER_URL"],
+            result_backend=app.config["CELERY_RESULT_BACKEND"],
+            task_ignore_result=True,
+            broker_connection_retry_on_startup=True
         )
     )
 
     dbConn.init_app(app)
+    celery_app = celery_init_app(app)
+
+    # Pull steam scores every 10 minutes.
+    celery_app.add_periodic_task(timedelta(minutes=10), jobs.scores.scheduled_score_pull, name='10 minute score pull', priority=3)
+
+    # Pull profiles for players active in the last 48 hours, every 60 minutes.
+    celery_app.add_periodic_task(timedelta(minutes=60), jobs.profiles.scheduled_profile_pull, name='hourly profile pull', kwargs={'span': 'default'}, priority=3)
+    
+    ### Daily jobs - staggered by minute to properly queue
+    # Pull the past 7 days for each dlc, daily at 11:15am UTC (15 minutes after daily changeover).
+    celery_app.add_periodic_task(crontab(minute='15', hour='11'), jobs.scores.scheduled_daily_lookback, name='daily score lookback', priority=3)
+
+    # Update score and time ranks on all score lines affected by the past day's bans, daily at 11:16am UTC (16 minutes after daily changeover).
+    celery_app.add_periodic_task(crontab(minute='16', hour='11'), jobs.scores.scheduled_daily_rerank, name='daily banned rerank', priority=3)
+
+    # Fetch player profiles every day at 11:16am UTC (16 minutes after daily changeover). This can overlap due to different tables.
+    celery_app.add_periodic_task(crontab(minute='16', hour='11'), jobs.profiles.scheduled_profile_pull, name='daily profile pull', kwargs={'span': 'all'}, priority=3)
+
+    # Calculate leaderboards every day at 11:17am UTC (17 minutes after daily changeover).
+    celery_app.add_periodic_task(crontab(minute='17', hour='11'), jobs.scores.scheduled_top100_noaltf4, name='daily top100 recalculation', priority=3)
+
     cache.init_app(app)
-    celery_init_app(app)
 
     with app.app_context():
         app.jinja_env.filters['format_time'] = format_time_filter
@@ -96,3 +101,51 @@ def init_app(test_config=None) -> Flask:
         app.register_blueprint(moderator.moderator_bp)
 
         return app
+
+
+def celery_init_app(app: Flask) -> Celery:
+    app = app or init_app()
+
+    class FlaskSingleton(Singleton):
+        def __call__(self, *args: object, **kwargs: object) -> object:
+            with app.app_context():
+                return self.run(*args, **kwargs)
+            
+    celery_app = Celery(app.name, task_cls=FlaskSingleton)
+    celery_app.config_from_object(app.config["CELERY"])
+
+    celery_app.conf.broker_transport_options = {
+        'priority_steps': list(range(3)),
+        'sep': ':',
+        'queue_order_strategy': 'priority'
+    }
+
+    celery_app.conf.task_queues = {
+        Queue('default_jobs', Exchange('jobs'), routing_key='jobs.default'),
+        Queue('score_jobs', Exchange('jobs'), routing_key='jobs.score'),
+        Queue('profile_jobs', Exchange('jobs'), routing_key='jobs.profile')
+    }
+
+    celery_app.conf.task_default_queue = 'default_jobs'
+    celery_app.conf.task_default_exchange_type = 'direct'
+    celery_app.conf.task_default_routing_key = 'jobs.default'
+
+    celery_app.conf.task_routes = {
+        'jobs.scores.*': {
+            'queue': 'score_jobs',
+            'exchange': 'jobs',
+            'priority': 3
+        },
+        'jobs.profiles.*': {
+            'queue': 'profile_jobs',
+            'exchange': 'jobs',
+            'priority': 3
+        }
+    }
+
+    celery_app.set_default()
+    app.extensions["celery"] = celery_app
+
+    celery_app.Task = FlaskSingleton
+
+    return celery_app

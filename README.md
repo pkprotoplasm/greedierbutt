@@ -16,7 +16,7 @@ After pulling the repository to your machine, you'll need to take the following 
 - Activate the virtual environment: `. .venv/bin/activate` (be mindful of the dots)
 - Install python dependencies: `pip install -r requirements.txt`
 - Use mysqlrestore or another database schema ingestion tool to load `scripts/mysql-structure.sql`
-- Set up cron jobs to run the bash scripts (`*.sh`) in `scripts` on your desired schedule
+- Use the `scrapescores.py` and `playerprofiles.py` tools in the `scripts` directory to "prime" your database.
 - Copy the `greedierbutt.service` file to the user's systemd units directory `~/.config/systemd/user/`
 - Enable the service: `systemctl --user enable greedierbutt.service`
 - As root, enable linger for the greedierbutt user: `# loginctl enable-linger greedierbutt`
@@ -24,13 +24,14 @@ After pulling the repository to your machine, you'll need to take the following 
 ## Configuration
 All configuration is done via the `.env` file. An example has been provided in `.env.example`.
 
-It is *strongly recommended* that you set up a SQL user with reduced privileges for the web frontend. The backend scripts will do the heavy lifting on the scores table; the frontend only needs write access to certain limited fields. Using a reduced-privilege user for the frontend's access will help mitigate any potential future SQL injection vulnerabilities.
-
 ## Please note
 This code is not fully complete. A functional site is/was running on greedierbutt.com with this exact code, however additional features were planned and have not been implemented.
 
 ## What's missing
 There is currently no administration console. All administration (such as unbanning users, adding/removing moderators, and removing any data from the database) must be done via SQL.
+
+## Job troubleshooting
+Some jobs are dependent on external APIs that have rate limits that may appear to fluctuate at random depending on the upstream's traffic. If you are concerned about backend jobs being "stuck", review the job server's queue by visiting `http://a.b.c.d:5555/`. WARNING: Don't make this port publicly accessible! This interface allows visitors to terminate and revoke jobs!
 
 Moderator and admin privileges are controlled by the `profiles` table's `moderator` and `admin` boolean columns, respectively.
 

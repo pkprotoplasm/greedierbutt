@@ -101,6 +101,7 @@ def get_badges(row):
 @daily_bp.route("/daily/<int:datearg>/<string:rankby>", strict_slashes=False)
 @daily_bp.route("/daily/<int:datearg>/<string:rankby>/<string:arg3>")
 def daily(datearg="0", rankby="scores", arg3="1"):
+
     startTime = datetime.now()
 
     # Determine today's date, which is 10 hours behind UTC for the purposes of Isaac bookkeeping.

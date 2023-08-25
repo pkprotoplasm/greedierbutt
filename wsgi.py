@@ -1,11 +1,14 @@
 """Application entry point."""
 from greedierbutt_flask import init_app, dbConn
+from greedierbutt_flask.jobs.scores import scheduled_score_pull
+from greedierbutt_flask.jobs.profiles import scheduled_profile_pull
 
 from flask import g
 from flask import request, session
 from flask import render_template
 from urllib.parse import urlparse
 import re
+
 
 # Generates UUIDs for 500 ISE pages and tags a log entry with them.
 import uuid
@@ -14,11 +17,11 @@ import logging
 logger = logging.getLogger('werkzeug') # grabs underlying WSGI logger
 
 app = init_app()
+celery = app.extensions['celery']
 
 @app.before_request
 def open_cursor():
     g.cursor = dbConn.connection.cursor()
-    g.cursor.execute('SET CHARACTER SET utf8mb4')
 
 @app.before_request
 def set_globals():

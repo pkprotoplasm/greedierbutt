@@ -72,6 +72,7 @@ def pull_player_profiles(span='all'):
             profileRows = cursor.fetchall()
 
             apiCallCount = 0
+            retryCount = 0
             insertList = []
 
             for i in range(0, len(profileRows), 100):
@@ -90,15 +91,18 @@ def pull_player_profiles(span='all'):
                     except Exception as e:
                         if profilesPayload.status_code == 429:
                             logger.info(f"pull_player_profiles({span}): Steam API said too many requests")
-                            if i == 0:
-                                raise Exception("Received too many requests on first iteration.", "API Limit Exceeded", 69) # Nice
+                            if i == 0 or retryCount > 10:
+                                logger.info(f"pull_player_profiles({span}): API Limit is exceeded.")
+                                break
+                            retryCount += 1
                             time.sleep(60)
                         pass
 
                 for playerProfile in profiles["response"]["players"]:
                     insertList.append((playerProfile["personaname"], playerProfile["profileurl"], playerProfile["avatar"], playerProfile["avatarmedium"], playerProfile["avatarfull"], playerProfile["steamid"], playerProfile["personaname"], playerProfile["profileurl"], playerProfile["avatar"], playerProfile["avatarmedium"], playerProfile["avatarfull"]))
 
-            cursor.executemany("""INSERT INTO profiles(personaname, profileurl, avatar, avatarmedium, avatarfull, steamid, blacklisted) VALUES(%s, %s, %s, %s, %s, %s, false) ON DUPLICATE KEY UPDATE personaname=%s, profileurl=%s, avatar=%s, avatarmedium=%s, avatarfull=%s, lastupdate=TIMESTAMP(NOW())""", insertList)
+            if len(insertList) > 0:
+                cursor.executemany("""INSERT INTO profiles(personaname, profileurl, avatar, avatarmedium, avatarfull, steamid, blacklisted) VALUES(%s, %s, %s, %s, %s, %s, false) ON DUPLICATE KEY UPDATE personaname=%s, profileurl=%s, avatar=%s, avatarmedium=%s, avatarfull=%s, lastupdate=TIMESTAMP(NOW())""", insertList)
 
             cursor.execute("""UPDATE metadata SET lastupdate=TIMESTAMP(NOW())""")
 

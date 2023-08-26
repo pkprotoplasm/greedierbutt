@@ -109,7 +109,11 @@ def celery_init_app(app: Flask) -> Celery:
     class FlaskSingleton(Singleton):
         def __call__(self, *args: object, **kwargs: object) -> object:
             with app.app_context():
-                return self.run(*args, **kwargs)
+                try:
+                    return self.run(*args, **kwargs)
+                except Exception as e:
+                    self.release_lock(task_args=args, task_kwargs=kwargs)
+                    return e
             
     celery_app = Celery(app.name, task_cls=FlaskSingleton)
     celery_app.config_from_object(app.config["CELERY"])

@@ -14,6 +14,7 @@ from flask import g
 
 # Application imports
 from greedierbutt_flask import dbConn
+from greedierbutt_flask.jobs.profiles import insert_dummy_profiles, automod_ban_profile
 
 logger = logging.getLogger(__name__)
 
@@ -160,7 +161,10 @@ def fetch_scores(date, dlc):
                         banList.append((int(leaderboardEntry["steamid"]), f"Impossible schwag bonus {schwagBonus} on {date}"))
 
                     scoreKey = leaderboardEntry['steamid'] + '.' + date
-                    steamIDList.append(int(leaderboardEntry['steamid']))
+                    
+                    # The executemany() job will expect a tuple here.
+                    steamIDList.append((int(leaderboardEntry['steamid']),))
+
                     insertList.append((int(date), scoreKey, int(leaderboardEntry["steamid"]), int(leaderboardEntry["rank"]), int(leaderboardEntry["score"]), stageBonus, explorationBonus, schwagBonus, rushBonus, bluebabyBonus, lambBonus, megasatanBonus, damagePenalty, timePenalty, itemPenalty, level, timeTaken, goal, leaderboardEntry["details"], shortenedLine, int(leaderboardEntry['rank']), int(leaderboardEntry["score"]), stageBonus, explorationBonus, schwagBonus, rushBonus, bluebabyBonus, lambBonus, megasatanBonus, damagePenalty, timePenalty, itemPenalty, level, timeTaken, goal, leaderboardEntry["details"], shortenedLine))
 
                 processedRecords += int(leaderboard["response"]["resultCount"])
@@ -286,11 +290,10 @@ def fetch_scores(date, dlc):
             """)
             ####
 
-            for profile in steamIDList:
-                cursor.execute("""INSERT IGNORE INTO profiles (steamid, personaname) VALUES (%s, 'Unknown user')""", (int(profile),))
+            insert_dummy_profiles.delay(profile_list=steamIDList)
 
             for profile in banList:
-                cursor.execute("""INSERT INTO profiles (steamid, blacklisted, blacklisted_by, blacklisted_reason, blacklisted_date) VALUES(%s, true, 0, %s, TIMESTAMP(NOW())) ON DUPLICATE KEY UPDATE blacklisted=true, blacklisted_by=0, blacklisted_reason=%s""", (profile[0], profile[1], profile[1]))
+                automod_ban_profile.delay(steamid=profile[0], reason=profile[1])
 
             cursor.execute("""UPDATE metadata SET activeplayercount=(SELECT COUNT(DISTINCT steamid) FROM scores WHERE scorerank<999999 AND scorerank>0 AND goal>0)""")
             cursor.execute("""UPDATE metadata SET scorelinecount=(SELECT COUNT(scoreid) FROM scores)""")

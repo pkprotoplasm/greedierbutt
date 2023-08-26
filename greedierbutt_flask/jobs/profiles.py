@@ -35,6 +35,24 @@ def update_banned_user_profile(self, reportid, steamid, reason):
     cursor.close()
     return f"Successfully updated banned user profile for report {reportid}"
 
+@shared_task(bind=True, name='jobs.profiles.insert_dummy_profiles')
+def insert_dummy_profiles(self, profile_list):
+    cursor = dbConn.connection.cursor()    
+    cursor.executemany("INSERT IGNORE INTO profiles (steamid, personaname) VALUES (%s, 'Unknown user')", profile_list)
+
+    dbConn.connection.commit()
+    cursor.close()
+    return f"Successfully inserted dummy profile for Steam ID(s) {profile_list}"
+
+@shared_task(bind=True, name='jobs.profiles.automod_ban_profile')
+def automod_ban_profile(self, steamid, reason):
+    cursor = dbConn.connection.cursor()
+    cursor.execute("INSERT INTO profiles (steamid, blacklisted, blacklisted_by, blacklisted_reason, blacklisted_date) VALUES(%s, true, 0, %s, TIMESTAMP(NOW())) ON DUPLICATE KEY UPDATE blacklisted=true, blacklisted_by=0, blacklisted_reason=%s", (steamid, reason, reason))
+
+    dbConn.connection.commit()
+    cursor.close()
+    return f"Successfully set automod ban for Steam ID {steamid}"
+
 def pull_player_profiles(span='all'):
     with app.app_context():
         try:

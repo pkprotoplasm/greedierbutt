@@ -35,7 +35,7 @@ def update_banned_user_profile(self, reportid, steamid, reason):
     cursor.close()
     return f"Successfully updated banned user profile for report {reportid}"
 
-@shared_task(bind=True, name='jobs.profiles.insert_dummy_profiles')
+@shared_task(bind=True, name='jobs.profiles.insert_dummy_profiles', autoretry_for=(Exception,), retry_backoff=10, retry_kwargs={'max_retries': 5})
 def insert_dummy_profiles(self, profile_list):
     cursor = dbConn.connection.cursor()    
     cursor.executemany("INSERT IGNORE INTO profiles (steamid, personaname) VALUES (%s, 'Unknown user')", profile_list)
@@ -44,7 +44,7 @@ def insert_dummy_profiles(self, profile_list):
     cursor.close()
     return f"Successfully inserted dummy profile for Steam ID(s) {profile_list}"
 
-@shared_task(bind=True, name='jobs.profiles.automod_ban_profile')
+@shared_task(bind=True, name='jobs.profiles.automod_ban_profile', autoretry_for=(Exception,), retry_backoff=10, retry_kwargs={'max_retries': 5})
 def automod_ban_profile(self, steamid, reason):
     cursor = dbConn.connection.cursor()
     cursor.execute("INSERT INTO profiles (steamid, blacklisted, blacklisted_by, blacklisted_reason, blacklisted_date) VALUES(%s, true, 0, %s, TIMESTAMP(NOW())) ON DUPLICATE KEY UPDATE blacklisted=true, blacklisted_by=0, blacklisted_reason=%s", (steamid, reason, reason))

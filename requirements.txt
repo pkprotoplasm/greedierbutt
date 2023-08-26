@@ -18,6 +18,8 @@ Flask-MySQLdb==1.0.1
 flask-paginate==2022.1.8
 Flask-Pagination==0.0.1
 Flask-Session==0.4.1
+flower==2.0.1
+humanize==4.8.0
 idna==3.4
 importlib-metadata==6.6.0
 itsdangerous==2.1.2
@@ -27,6 +29,7 @@ MarkupSafe==2.1.2
 mysqlclient==2.1.1
 numpy==1.25.1
 pandas==2.0.3
+prometheus-client==0.17.1
 prompt-toolkit==3.0.39
 python-dateutil==2.8.2
 python-dotenv==1.0.0
@@ -36,6 +39,7 @@ redis==4.6.0
 requests==2.31.0
 six==1.16.0
 steamsignin==1.1.1
+tornado==6.3.3
 typing_extensions==4.7.1
 tzdata==2023.3
 urllib3==2.0.2

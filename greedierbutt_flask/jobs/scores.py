@@ -290,17 +290,18 @@ def fetch_scores(date, dlc):
             """)
             ####
 
-            insert_dummy_profiles.delay(profile_list=steamIDList)
-
-            for profile in banList:
-                automod_ban_profile.delay(steamid=profile[0], reason=profile[1])
-
             cursor.execute("""UPDATE metadata SET activeplayercount=(SELECT COUNT(DISTINCT steamid) FROM scores WHERE scorerank<999999 AND scorerank>0 AND goal>0)""")
             cursor.execute("""UPDATE metadata SET scorelinecount=(SELECT COUNT(scoreid) FROM scores)""")
 
             dbConn.connection.commit()
 
             cursor.close()
+
+            insert_dummy_profiles.delay(profile_list=steamIDList)
+
+            for profile in banList:
+                automod_ban_profile.delay(steamid=profile[0], reason=profile[1])
+
             return f"Successfully fetched {date} for {dlc}"
 
         except Exception as e:

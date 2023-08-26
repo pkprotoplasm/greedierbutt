@@ -8,6 +8,7 @@ from celery import shared_task
 
 # Flask imports
 from flask import current_app as app
+from flask import g
 
 # Application imports
 from greedierbutt_flask import dbConn
@@ -24,6 +25,15 @@ def scheduled_profile_pull(span='default'):
         logger.error(f"scheduled_profile_pull({span}): Exception: {e}")
 
     return results
+
+@shared_task(bind=True, name='jobs.profiles.update_banned_user_profile')
+def update_banned_user_profile(self, reportid, steamid, reason):
+    cursor = dbConn.connection.cursor()    
+    cursor.execute('UPDATE profiles AS p, reports AS r SET p.blacklisted=1, p.blacklisted_date=NOW(), p.blacklisted_by=%s, p.blacklisted_reason=%s WHERE p.steamid=r.steamid AND r.reportid=%s', [steamid, reason, reportid])
+
+    dbConn.connection.commit()
+    cursor.close()
+    return f"Successfully updated banned user profile for report {reportid}"
 
 def pull_player_profiles(span='all'):
     with app.app_context():
@@ -75,6 +85,7 @@ def pull_player_profiles(span='all'):
             cursor.execute("""UPDATE metadata SET lastupdate=TIMESTAMP(NOW())""")
 
             dbConn.connection.commit()
+            cursor.close()
 
             return f"Successfully updated {len(insertList)} profiles (considered {len(profileRows)} active players)"
         except Exception as e:

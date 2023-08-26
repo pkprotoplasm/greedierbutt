@@ -10,6 +10,7 @@ from celery import shared_task
 
 # Flask imports
 from flask import current_app as app
+from flask import g
 
 # Application imports
 from greedierbutt_flask import dbConn
@@ -70,8 +71,16 @@ def scheduled_top100_noaltf4():
             logger.info(f"scheduled_top100_noaltf4(): Exception: {e}")
 
     return results
-    
 
+@shared_task(bind=True, name='jobs.scores.update_banned_user_scores')
+def update_banned_user_scores(self, reportid):
+    cursor = dbConn.connection.cursor()
+    cursor.execute('UPDATE scores AS s, reports AS r SET s.scorerank=999999, s.timerank=999999 WHERE s.steamid=r.steamid AND r.reportid=%s', [reportid])
+    
+    dbConn.connection.commit()
+    cursor.close()
+    return f"Successfully updated scores for banned user on report {reportid}"
+    
 def get_date_url(dlc, date):
     """Returns steam leaderboard XML URL for a given date & dlc."""
     with open(f"{path.dirname(path.realpath(__file__))}/datescoreurls-{dlc}.txt", 'r') as dateURLs:
@@ -401,6 +410,7 @@ def calculate_top100_noaltf4(dest_table, dlc):
             """)
 
             dbConn.connection.commit()
+            cursor.close()
 
             return f"Successfully calculated no alt+f4 leaderboard for {dlc}"
         except Exception as e:
@@ -471,6 +481,7 @@ def full_rerank():
             cursor.execute("""UPDATE LOW_PRIORITY metadata SET lastupdate=TIMESTAMP(NOW())""")
 
             dbConn.connection.commit()
+            cursor.close()
 
             return "Successfully updated ranks"
         except Exception as e:

@@ -13,6 +13,8 @@ from flask_paginate import Pagination
 
 # Application imports
 from greedierbutt_flask import cache, dbConn, format_time_filter
+from greedierbutt_flask.jobs.scores import update_banned_user_scores
+from greedierbutt_flask.jobs.profiles import update_banned_user_profile
 
 # General Python imports
 from urllib.parse import urlparse
@@ -98,20 +100,24 @@ def moderator_review(reportid):
                 return render_template("403.html", title="Moderators Only", message="Only moderators can access this page."), 403
 
         approved = 0
+        approvedMessage = ''
         if request.form['action'] == "accept":
             approved = 1
+            approvedMessage = " The player's profile and scores will be updated shortly."
 
             # Set the player profile to blacklisted
-            g.cursor.execute('UPDATE profiles AS p, reports AS r SET p.blacklisted=1, p.blacklisted_date=NOW(), p.blacklisted_by=%s, p.blacklisted_reason=%s WHERE p.steamid=r.steamid AND r.reportid=%s', [session.get('steamid'), request.form['reason'], reportid])
+            update_banned_user_profile.delay(reportid=reportid, steamid=session.get('steamid'), reason=request.form['reason'])
 
             # Set the score ranks to 999999
-            g.cursor.execute('UPDATE scores AS s, reports AS r SET s.scorerank=999999, s.timerank=999999 WHERE s.steamid=r.steamid AND r.reportid=%s', [reportid])
+            update_banned_user_scores.delay(reportid=reportid)
 
         # Update the reports table.
         g.cursor.execute('UPDATE reports SET approved=%s, reviewer=%s, response=%s, processed=false WHERE reportid=%s', [approved, session.get('steamid'), request.form['reason'], reportid])
 
         g.cursor.close()
         dbConn.connection.commit()
+
+        flash(f"Thank you, the report has been updated.{approvedMessage if approved == 1 else ''}")
 
         # Go back to the moderator page.
         return redirect(url_for('moderator_bp.moderator'))

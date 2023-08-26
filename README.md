@@ -30,12 +30,12 @@ This code is not fully complete. A functional site is/was running on greedierbut
 ## What's missing
 There is currently no administration console. All administration (such as unbanning users, adding/removing moderators, and removing any data from the database) must be done via SQL.
 
-## Job troubleshooting
-Some jobs are dependent on external APIs that have rate limits that may appear to fluctuate at random depending on the upstream's traffic. If you are concerned about backend jobs being "stuck", review the job server's queue by visiting `http://a.b.c.d:5555/`. WARNING: Don't make this port publicly accessible! This interface allows visitors to terminate and revoke jobs!
-
 Moderator and admin privileges are controlled by the `profiles` table's `moderator` and `admin` boolean columns, respectively.
 
 User bans are controlled by the `profiles` table's `blacklisted` column. Ban metadata is provided in the table's `blacklisted_by`, `blacklisted_reason`, and `blacklisted_date` columns. Banned users will have the values in the `scores` table's `scorerank` and `timerank` columns hardcoded to `999999`. This provides fast indexed identification of bans in queries. When unbanning a user, the admin should recalculate ranks on all dates the player had participated in.
+
+## Job troubleshooting
+Some jobs are dependent on external APIs that have rate limits that may appear to fluctuate at random depending on the upstream's traffic. If you are concerned about backend jobs being "stuck", review the job server's queue by visiting `http://a.b.c.d:5555/`. WARNING: Don't make this port publicly accessible! This interface allows visitors to terminate and revoke jobs!
 
 ## License
 GNU General Public License version 3.

@@ -61,15 +61,24 @@ def login_callback():
             r = requests.get(f"http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={app.config.get('STEAM_KEY')}&steamids={steamID}")
             steamJSON = r.json()['response']['players'][0]
 
-            # Set additional necessary session variables for frontend.
-            session["personaname"] = steamJSON["personaname"]
-            session["avatar"] = steamJSON["avatar"]
+            if r.status_code >= 400:
+                g.cursor.execute("SELECT personaname, avatar FROM profiles WHERE steamid=%s", (steamID))
+                profileRow = g.cursor.fetch()
 
-            session.modified = True
+                session["personaname"] = profileRow["personaname"]
+                session["avatar"] = profileRow["avatar"]
 
-            # Update the player's profile stored in our database.
-            g.cursor.execute("UPDATE profiles SET personaname=%s, profileurl=%s, avatar=%s, avatarmedium=%s, avatarfull=%s WHERE steamid=%s", [steamJSON["personaname"], steamJSON["profileurl"], steamJSON["avatar"], steamJSON["avatarmedium"], steamJSON["avatarfull"], steamID])
-            dbConn.connection.commit()
+                raise Exception(f"API call failed for login_callback(). Status code: {r.status_code}")
+            else:
+                # Set additional necessary session variables for frontend.
+                session["personaname"] = steamJSON["personaname"]
+                session["avatar"] = steamJSON["avatar"]
+
+                session.modified = True
+
+                # Update the player's profile stored in our database.
+                g.cursor.execute("UPDATE profiles SET personaname=%s, profileurl=%s, avatar=%s, avatarmedium=%s, avatarfull=%s WHERE steamid=%s", [steamJSON["personaname"], steamJSON["profileurl"], steamJSON["avatar"], steamJSON["avatarmedium"], steamJSON["avatarfull"], steamID])
+                dbConn.connection.commit()
         except Exception as e:
             logger.warn(f"login_callback(): Exception: {e}")
         

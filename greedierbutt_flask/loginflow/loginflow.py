@@ -10,6 +10,7 @@ from flask import g
 
 # Application imports
 from greedierbutt_flask import dbConn
+from greedierbutt_flask.jobs.profiles import update_steam_profile
 
 # General Python imports
 from urllib.parse import urlparse
@@ -77,8 +78,8 @@ def login_callback():
                 session.modified = True
 
                 # Update the player's profile stored in our database.
-                g.cursor.execute("UPDATE profiles SET personaname=%s, profileurl=%s, avatar=%s, avatarmedium=%s, avatarfull=%s WHERE steamid=%s", [steamJSON["personaname"], steamJSON["profileurl"], steamJSON["avatar"], steamJSON["avatarmedium"], steamJSON["avatarfull"], steamID])
-                dbConn.connection.commit()
+                update_steam_profile.delay(steamid=steamID, personaname=steamJSON["personaname"], profileurl=steamJSON["profileurl"], avatar=steamJSON["avatar"], avatarmedium=steamJSON["avatarmedium"], avatarfull=steamJSON["avatarfull"])
+
         except Exception as e:
             logger.warn(f"login_callback(): Exception: {e}")
         

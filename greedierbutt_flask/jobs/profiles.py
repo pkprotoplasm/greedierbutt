@@ -53,6 +53,17 @@ def automod_ban_profile(self, steamid, reason):
     cursor.close()
     return f"Successfully set automod ban for Steam ID {steamid}"
 
+@shared_task(bind=True, name='jobs.profiles.update_steam_profile', autoretry_for=(Exception,), retry_backoff=10, retry_kwargs={'max_retries': 5})
+def update_steam_profile(self, steamid, personaname, profileurl, avatar, avatarmedium, avatarfull):
+    cursor = dbConn.connection.cursor()
+    
+    # Update the player's profile stored in our database.
+    cursor.execute("UPDATE profiles SET personaname=%s, profileurl=%s, avatar=%s, avatarmedium=%s, avatarfull=%s WHERE steamid=%s", [personaname, profileurl, avatar, avatarmedium, avatarfull, steamid])
+    dbConn.connection.commit()
+    cursor.close()
+
+    return f"Successfully updated profile from Steam for {steamid}"
+
 def pull_player_profiles(span='all'):
     with app.app_context():
         try:

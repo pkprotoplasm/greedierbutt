@@ -61,14 +61,10 @@ def login_callback():
             # Call the Steam API to get the rest of the player's profile information.
             r = requests.get(f"http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={app.config.get('STEAM_KEY')}&steamids={steamID}")
             steamJSON = r.json()['response']['players'][0]
+            logger.info(r.json())
+            logger.info(r.status_code)
 
             if r.status_code >= 400:
-                g.cursor.execute("SELECT personaname, avatar FROM profiles WHERE steamid=%s", (steamID))
-                profileRow = g.cursor.fetch()
-
-                session["personaname"] = profileRow["personaname"]
-                session["avatar"] = profileRow["avatar"]
-
                 raise Exception(f"API call failed for login_callback(). Status code: {r.status_code}")
             else:
                 # Set additional necessary session variables for frontend.
@@ -81,6 +77,12 @@ def login_callback():
                 update_steam_profile.delay(steamid=steamID, personaname=steamJSON["personaname"], profileurl=steamJSON["profileurl"], avatar=steamJSON["avatar"], avatarmedium=steamJSON["avatarmedium"], avatarfull=steamJSON["avatarfull"])
 
         except Exception as e:
+            g.cursor.execute("SELECT personaname, avatar FROM profiles WHERE steamid=%s LIMIT 1", [steamID])
+            profileRow = g.cursor.fetchone()
+
+            session["personaname"] = profileRow["personaname"]
+            session["avatar"] = profileRow["avatar"]
+
             logger.warn(f"login_callback(): Exception: {e}")
         
         flash("Thanks for logging in!", "success")

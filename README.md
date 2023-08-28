@@ -1,7 +1,7 @@
 # Greedierbutt
 This is a repository containing all of the code of the greedierbutt.com website.
 
-The frontend is written in python using the flask framework. The database is stored in MariaDB/MySQL. The backend is a small collection of bash scripts run by cronjob, which will call python scripts to pull scores from Steam leaderboards, fetch player profiles from Steam API, and calculate ranks and leaderboards.
+The frontend is written in python using the flask framework. The database is stored in MariaDB/MySQL. The backend is built with the celery job management framework, which will call APIs and update database rows asynchronously.
 
 ## How to use this repository
 Check the files out to your local machine. While the code uses python, some of it assumes a Linux or other Unix-like machine is the host.

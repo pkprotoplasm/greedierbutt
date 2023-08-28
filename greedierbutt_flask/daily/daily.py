@@ -78,7 +78,9 @@ def get_badges(row):
         badges.append({'name': "Nice", 'title': 'Time rank of 69', 'class': 'success'})
 
     if row['score'] == 5318008:
-        badges.append({'name': '(.)(.)', 'title': 'Sexy score', 'class': 'success'})
+        badges.append({'name': '( . )( . )', 'title': 'Sexy score', 'class': 'success'})
+    elif row['score'] == 318008:
+        badges.append({'name': '( . )', 'title': 'Just the one', 'class': 'success'})
 
     if row['time'] > (60 * 60 * 30): # Over an hour
         badges.append({'name': "Slow Mode", 'title': 'Took over an hour to finish', 'class': 'warning'})

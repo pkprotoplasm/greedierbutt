@@ -58,41 +58,23 @@ def date_add(dateArg, dayCount):
 
 @app.template_filter()
 def get_badges(row):
-    badges = []
     badgeMarkup = []
 
-    if row['damage_penalty'] == 0 and row['level'] > 1:
-        badges.append({'name': 'Mr. Clean', 'title': 'Took no hits!', 'class': 'success'})
-    
-    if row['exploration_bonus'] > 1000000:
-        badges.append({'name': 'Marco Polo', 'title': 'Crazy high exploration bonus', 'class': 'info'})
+    if cache.has("badge_config"):
+        badge_config = cache.get("badge_config")
+    else:
+        g.cursor.execute("SELECT * FROM badgeinfo");
+        badge_config = g.cursor.fetchall()
+        cache.set("badge_config", badge_config, timeout=600)
 
-    if row['score'] == 42069 or row['score'] == 69420 or row['score'] == 690420 or row['score'] == 666999 or row['score'] == 1666999:
-        badges.append({'name': "Dave's Not Here", 'title': f'Funny number in score {row["score"]}', 'class': 'success'})
-
-    if row['scorerank'] == 69 and row['timerank'] == 69:
-        badges.append({'name': "Nicee!", 'title': 'Score AND Time rank of 69!!', 'class': 'success'})
-    elif row['scorerank'] == 69:
-        badges.append({'name': "Nice", 'title': 'Score rank of 69', 'class': 'success'})
-    elif row['timerank'] == 69:
-        badges.append({'name': "Nice", 'title': 'Time rank of 69', 'class': 'success'})
-
-    if row['score'] == 5318008:
-        badges.append({'name': '( . )( . )', 'title': 'Sexy score', 'class': 'success'})
-    elif row['score'] == 318008:
-        badges.append({'name': '( . )', 'title': 'Just the one', 'class': 'success'})
-
-    if row['time'] > (60 * 60 * 30): # Over an hour
-        badges.append({'name': "Slow Mode", 'title': 'Took over an hour to finish', 'class': 'warning'})
-
-    if not row['hits_taken'] == None and row['hits_taken'] > 50:
-        badges.append({'name': "Punching Bag", 'title': f'Took a beating ({row["hits_taken"]} hits taken)', 'class': 'success'})
-
-    if row['goal'] == 1:
-        badges.append({'name': 'Today I Died', 'title': "Couldn't survive this run", 'class': 'danger'})
-
-    for badge in badges:
-        badgeMarkup.append(f'<span class="badge bg-{badge["class"]}" data-bs-toggle="tooltip" title="{badge["title"]}">{badge["name"]}</span>')
+    for badge_item in badge_config:
+        # Using eval() here is not great, but we'll try to keep it as safe as possible.
+        safe_vars = { 'row': row }
+        if eval(badge_item['pythoncondition'], {}, safe_vars):
+            try:
+                badgeMarkup.append(f'<span class="badge bg-{badge_item["color"]}" data-bs-toggle="tooltip" title="{eval(badge_item["description"], {}, safe_vars)}">{badge_item["name"]}</span>')
+            except:
+                badgeMarkup.append(f'<span class="badge bg-{badge_item["color"]}" data-bs-toggle="tooltip" title="{badge_item["description"]}">{badge_item["name"]}</span>')
 
     return '\n'.join(badgeMarkup)
 

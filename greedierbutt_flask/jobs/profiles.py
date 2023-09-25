@@ -26,7 +26,7 @@ def scheduled_profile_pull(span='default'):
 
     return results
 
-@shared_task(bind=True, name='jobs.profiles.update_banned_user_profile')
+@shared_task(bind=True, name='jobs.profiles.update_banned_user_profile', autoretry_for=(Exception,), retry_backoff=10, retry_kwargs={'max_retries': None})
 def update_banned_user_profile(self, reportid, steamid, reason):
     cursor = dbConn.connection.cursor()    
     cursor.execute('UPDATE profiles AS p, reports AS r SET p.blacklisted=1, p.blacklisted_date=NOW(), p.blacklisted_by=%s, p.blacklisted_reason=%s WHERE p.steamid=r.steamid AND r.reportid=%s', [steamid, reason, reportid])

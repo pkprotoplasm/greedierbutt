@@ -73,7 +73,7 @@ def scheduled_top100_noaltf4():
 
     return results
 
-@shared_task(bind=True, name='jobs.scores.update_banned_user_scores')
+@shared_task(bind=True, name='jobs.scores.update_banned_user_scores', autoretry_for=(Exception,), retry_backoff=10, retry_kwargs={'max_retries': None})
 def update_banned_user_scores(self, reportid):
     cursor = dbConn.connection.cursor()
     cursor.execute('UPDATE scores AS s, reports AS r SET s.scorerank=999999, s.timerank=999999 WHERE s.steamid=r.steamid AND r.reportid=%s', [reportid])

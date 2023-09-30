@@ -30,6 +30,7 @@ def scheduled_score_pull():
             results.append(fetch_scores(date=today.strftime('%Y%m%d'), dlc=dlc))
         except Exception as e:
             logger.info(f"scheduled_score_pull(): Exception: {e}")
+            raise(e)
 
     return results
 
@@ -48,6 +49,7 @@ def scheduled_daily_lookback():
                 results.append(fetch_scores(date=cur_date.strftime('%Y%m%d'), dlc=dlc))
             except Exception as e:
                 logger.info(f"scheduled_daily_lookback(): Exception: {e}")
+                raise(e)
 
     return results
 
@@ -70,6 +72,7 @@ def scheduled_top100_noaltf4():
             results.append(calculate_top100_noaltf4(dest_table, dlc))
         except Exception as e:
             logger.info(f"scheduled_top100_noaltf4(): Exception: {e}")
+            raise(e)
 
     return results
 
@@ -295,8 +298,6 @@ def fetch_scores(date, dlc):
 
             dbConn.connection.commit()
 
-            cursor.close()
-
             insert_dummy_profiles.delay(profile_list=steamIDList)
 
             for profile in banList:
@@ -306,7 +307,9 @@ def fetch_scores(date, dlc):
 
         except Exception as e:
             logger.error(f"ERROR: fetch_scores({date}, {dlc}) #{sys.exc_info()[-1].tb_lineno}: {e}")
-            return e
+            raise(e)
+        finally:
+            cursor.close()
 
 
 def calculate_top100_noaltf4(dest_table, dlc):
@@ -414,12 +417,13 @@ def calculate_top100_noaltf4(dest_table, dlc):
             """)
 
             dbConn.connection.commit()
-            cursor.close()
 
             return f"Successfully calculated no alt+f4 leaderboard for {dlc}"
         except Exception as e:
             logger.error(f"ERROR: calculate_top100_noaltf4({dlc}) #{sys.exc_info()[-1].tb_lineno}: {e}")
-            return e
+            raise(e)
+        finally:
+            cursor.close()
 
 def full_rerank():
     """Background task to rerank all score lines, excluding banned players."""
@@ -485,9 +489,10 @@ def full_rerank():
             cursor.execute("""UPDATE LOW_PRIORITY metadata SET lastupdate=TIMESTAMP(NOW())""")
 
             dbConn.connection.commit()
-            cursor.close()
 
             return "Successfully updated ranks"
         except Exception as e:
             logger.error(f"ERROR: full_rerank() #{sys.exc_info()[-1].tb_lineno}: {e}")
-            return e
+            raise(e)
+        finally:
+            cursor.close()

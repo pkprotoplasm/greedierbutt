@@ -118,8 +118,9 @@ def pull_player_profiles(span='all'):
             cursor.execute("""UPDATE metadata SET lastupdate=TIMESTAMP(NOW())""")
 
             dbConn.connection.commit()
-            cursor.close()
 
             return f"Successfully updated {len(insertList)} profiles (considered {len(profileRows)} active players)"
         except Exception as e:
             logger.error(f"ERROR: pull_player_profiles({span}) #{sys.exc_info()[-1].tb_lineno}: Exception: {e}")
+        finally:
+            cursor.close()

@@ -14,7 +14,7 @@ click-repl==0.3.0
 fasteners==0.19
 Flask==2.2.5
 Flask-Caching==2.0.2
-Flask-MySQLdb==1.0.1
+Flask-MySQLdb==2.0.0
 flask-paginate==2022.1.8
 Flask-Pagination==0.0.1
 Flask-Session==0.5.0

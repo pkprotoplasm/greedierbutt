@@ -35,7 +35,7 @@ python-dateutil==2.8.2
 python-dotenv==1.0.0
 pytz==2023.3.post1
 pyuwsgi==2.0.22
-redis==4.6.0
+redis==5.0.1
 requests==2.31.0
 six==1.16.0
 steamsignin==1.1.1

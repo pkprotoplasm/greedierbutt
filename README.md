@@ -15,6 +15,8 @@ After pulling the repository to your machine, you'll need to take the following 
 - Create a virtual environment: `python -m venv .venv`
 - Activate the virtual environment: `. .venv/bin/activate` (be mindful of the dots)
 - Install python dependencies: `pip install -r requirements.txt`
+- If `npm` is not available on the machine, install it using `nodeenv --python-virtualenv`
+- Install node dependencies: `npm install`
 - Use mysqlrestore or another database schema ingestion tool to load `scripts/mysql-structure.sql`
 - Use the `scrapescores.py` and `playerprofiles.py` tools in the `scripts` directory to "prime" your database.
 - Copy the `greedierbutt.service` file to the user's systemd units directory `~/.config/systemd/user/`

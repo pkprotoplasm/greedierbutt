@@ -21,7 +21,7 @@ Flask-Session==0.5.0
 flower==2.0.1
 humanize==4.9.0
 idna==3.4
-importlib-metadata==6.8.0
+importlib-metadata==7.0.1
 itsdangerous==2.1.2
 Jinja2==3.1.2
 kombu==5.3.4

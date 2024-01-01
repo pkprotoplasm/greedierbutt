@@ -2,7 +2,6 @@ amqp==5.2.0
 async-timeout==4.0.3
 billiard==4.2.0
 blinker==1.7.0
-cachelib==0.10.2
 celery==5.3.6
 celery-singleton==0.3.1
 certifi==2023.11.17

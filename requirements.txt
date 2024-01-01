@@ -5,7 +5,7 @@ blinker==1.7.0
 cachelib==0.10.2
 celery==5.3.6
 celery-singleton==0.3.1
-certifi==2023.7.22
+certifi==2023.11.17
 charset-normalizer==3.3.2
 click==8.1.7
 click-didyoumean==0.3.0

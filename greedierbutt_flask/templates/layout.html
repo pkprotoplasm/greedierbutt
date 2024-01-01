@@ -17,7 +17,7 @@
         <link rel="icon" href="/static/greedierbutt.png">
     </head>
     <body data-bs-theme="dark">
-        <nav class="navbar navbar-expand-lg bg-primary ps-3 pe-3">
+        <nav class="navbar fixed-top navbar-expand-lg bg-primary ps-3 pe-3">
             <a class="navbar-brand" href="/">Greedier Butt</a>
             <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar">
                 <span class="navbar-toggler-icon"></span>
@@ -70,30 +70,32 @@
                     </li>
                     {% else %}
                     <li class="nav-item">
-                        <a href="{{ url_for("loginflow_bp.initiate_login") }}" class="nav-link">Log In</a>
+                        <a href="{{ url_for("loginflow_bp.initiate_login") }}" class="nav-link" data-bs-toggle="tooltip" data-bs-custom-class="navbar-tooltip" title="Check out your stats by signing in securely with your Steam account">Sign in with Steam</a>
                     </li>
                     {% endif %}
                 </ul>    
             </div>
         </nav>
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages -%}
-                {% for category, message in messages %}
-                    {% set alert_class = {
-                        "success": "alert-success",
-                        "error": "alert-danger"
-                    }[category] | default("alert-info") -%}
-                    <div class="alert alert-dismissible {{ alert_class }} w-50 start-50 translate-middle-x" role="alert">
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
-        <div class="container-fluid">
-            {% block body %}
-            {% endblock %}    
-        </div>
+        <section style="padding-top: 4em;">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages -%}
+                    {% for category, message in messages %}
+                        {% set alert_class = {
+                            "success": "alert-success",
+                            "error": "alert-danger"
+                        }[category] | default("alert-info") -%}
+                        <div class="alert alert-dismissible {{ alert_class }} w-50 start-50 translate-middle-x" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            <div class="container-fluid">
+                {% block body %}
+                {% endblock %}    
+            </div>
+        </section>
         <script>
             // Initialize tooltips
             var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))

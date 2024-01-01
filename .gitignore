@@ -120,5 +120,3 @@ flask_session/*
 
 node_modules/**
 greedierbutt_flask/static/gen/**
-
-package-lock.json

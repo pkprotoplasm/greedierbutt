@@ -1,7 +1,10 @@
 # Greedierbutt
-This is a repository containing all of the code of the greedierbutt.com website.
+This is a repository containing all of the code of the [greedierbutt.com](https://www.greedierbutt.com) website.
 
 The frontend is written in python using the flask framework. The database is stored in MariaDB/MySQL. The backend is built with the celery job management framework, which will call APIs and update database rows asynchronously.
+
+## Website Errors or Suggestions
+This code is used to drive the [greedierbutt.com](https://www.greedierbutt.com) website. If you've encountered an error or have suggestions to improve the website, please [submit an Issue on GitHub](https://github.com/pkprotoplasm/greedierbutt/issues).
 
 ## How to use this repository
 Check the files out to your local machine. While the code uses python, some of it assumes a Linux or other Unix-like machine is the host.

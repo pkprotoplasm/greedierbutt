@@ -117,3 +117,8 @@ flask_session/*
 
 # Unix socket
 *.sock
+
+node_modules/**
+greedierbutt_flask/static/gen/**
+
+package-lock.json

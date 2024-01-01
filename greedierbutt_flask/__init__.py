@@ -1,7 +1,10 @@
+import os
+
 from flask import Flask
 from flask import g
 from flask_mysqldb import MySQL
 from flask_caching import Cache
+from flask_assets import Environment, Bundle
 
 from celery import Celery
 from celery_singleton import Singleton
@@ -13,6 +16,7 @@ from datetime import timedelta
 dbConn = MySQL()
 celery = Celery()
 cache = Cache()
+assets = Environment()
 
 # strptime filter for templates
 def format_time_filter(seconds):
@@ -55,6 +59,8 @@ def init_app(test_config=None) -> Flask:
 
     dbConn.init_app(app)
     celery_app = celery_init_app(app)
+
+    assets.init_app(app)
 
     # Pull steam scores every 10 minutes.
     celery_app.add_periodic_task(timedelta(minutes=10), jobs.scores.scheduled_score_pull, name='10 minute score pull', priority=3)
@@ -99,6 +105,8 @@ def init_app(test_config=None) -> Flask:
         app.register_blueprint(player.player_bp)
         app.register_blueprint(score.score_bp)
         app.register_blueprint(moderator.moderator_bp)
+
+        assets.append_path(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'node_modules')))
 
         return app
 

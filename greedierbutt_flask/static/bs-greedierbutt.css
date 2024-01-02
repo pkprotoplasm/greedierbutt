@@ -188,6 +188,7 @@ a { text-decoration: none; }
 
 .calendar-header {
     color: var(--bs-primary);
+    margin-top: 6px !important;
 }
 
 .calendar-header .disabled, .date-container-days .day .disabled {

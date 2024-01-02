@@ -30,6 +30,9 @@
     --bs-nav-link-color: var(--bs-gray-900);
 
     --bs-ui-elem-hover-color: var(--bs-yellow);
+
+    --td-dark-active-color: var(--bs-white);
+    --td-dark-active-bg: var(--bs-primary);
 }
 
 .tooltip {
@@ -177,8 +180,20 @@ a { text-decoration: none; }
     }
 }
 
-.change-date {
+.change-date, .date-container {
     text-decoration-line: none !important;
     border: 0px !important;
     margin-top: -6px !important;
+}
+
+.calendar-header {
+    color: var(--bs-primary);
+}
+
+.calendar-header .disabled, .date-container-days .day .disabled {
+    color: var(--td-dark-disabled-color);
+}
+
+.tempus-dominus-widget .toolbar {
+    color: var(--bs-primary);
 }

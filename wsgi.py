@@ -19,6 +19,10 @@ logger = logging.getLogger('werkzeug') # grabs underlying WSGI logger
 app = init_app()
 celery = app.extensions['celery']
 
+@app.context_processor
+def inject_debug():
+    return dict(debug=app.debug)
+
 @app.before_request
 def open_cursor():
     g.cursor = dbConn.connection.cursor()
@@ -53,7 +57,7 @@ def internal_server_error(e):
     error_uuid = uuid.uuid4()
     logger.error(f"{error_uuid}: {e}")
     return render_template("500.html", error_uuid=error_uuid), 500
-        
+
 def get_dlc(hostName):
     re_validator = re.compile(r'^[0-9a-zA-Z_\$]+$')
     

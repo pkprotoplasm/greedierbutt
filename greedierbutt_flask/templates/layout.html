@@ -5,17 +5,22 @@
         <meta name="viewport" content="initial-scale=1, width=device-width">
         <title>{% block title %}{% endblock %} - Greedier Butt</title>
 
-        {% assets output="gen/packed.js", 
+        {% set gen_dir = "gen" %}
+        {% if debug %}
+            {% set gen_dir = gen_dir ~ "/debug" %}
+        {% endif %}
+        {% assets output=gen_dir ~ "/packed.js", 
             "bootstrap/dist/js/bootstrap.bundle.min.js",
             "jquery/dist/jquery.min.js",
-            "bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"
+            "@popperjs/core/dist/umd/popper.min.js",
+            "@eonasdan/tempus-dominus/dist/js/tempus-dominus.min.js"
         %}
         <script type="text/javascript" src="{{ ASSET_URL }}" integrity="{{ ASSET_SRI }}"></script>
         {% endassets %}
 
-        {% assets output="gen/packed.css", 
+        {% assets output=gen_dir ~ "/packed.css", 
             "bootstrap/dist/css/bootstrap.min.css",
-            "bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css"
+            "@eonasdan/tempus-dominus/dist/css/tempus-dominus.min.css"
         %}
         <link rel="stylesheet" href="{{ ASSET_URL }}" integrity="{{ ASSET_SRI }}">
         {% endassets %}

@@ -100,6 +100,9 @@ def init_app(test_config=None) -> Flask:
             PERMANENT_SESSION_LIFETIME = timedelta(days=90)
         )
 
+        if app.debug:
+            app.config.update(SESSION_COOKIE_DOMAIN='.localhost')
+
         app.register_blueprint(daily.daily_bp)
         app.register_blueprint(loginflow.loginflow_bp)
         app.register_blueprint(player.player_bp)

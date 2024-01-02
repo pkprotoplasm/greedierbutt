@@ -11,7 +11,7 @@
         {% set prevDate = date|date_add(-1) %}
         {% set nextDate = date|date_add(1) %}
         <a href="{{ url_for('daily_bp.daily', datearg=prevDate.strftime('%Y%m%d'), rankby={'scorerank': 'scores', 'timerank': 'times'}[orderBy]) }}" title="Go to {{ prevDate.strftime('%A %B %d, %Y') }}"><i class="bi bi-caret-left-fill"></i></a>
-        <span id="date-picker input-group" class="align-text-bottom">
+        <span id="datetimepicker1" class="align-text-bottom">
             <button class="btn btn-link fs-2 change-date align-middle" title="Change Date" type="button">
                 <span class="d-none d-lg-inline">{{ date.strftime('%A %B %d, %Y') }}</span>
                 <span class="d-lg-none">{{ date.strftime('%a %b %d, %Y') }}</span>
@@ -22,19 +22,75 @@
             </button>
         </span>
         <script>
-            $('.change-date').datepicker({
-                todayBtn: 'linked',
-                autoclose: true,
-                defaultViewDate: "{{ date.strftime('%m/%d/%Y') }}",
-                title: "Pick a day to go to...",
-                endDate: "{{ today.strftime('%m/%d/%Y') }}"
-            });
-
-            $('.change-date').datepicker('setDate', "{{ date.strftime('%m/%d/%Y') }}");
+            const picker = new tempusDominus.TempusDominus(document.getElementById('datetimepicker1'),
+            {
+                localization: {
+                    locale: 'en-US',
+                    format: 'MM/dd/yyyy',
+                },
+                defaultDate: "{{ date.strftime('%m/%d/%Y') }}",
+                restrictions: {
+                    minDate: undefined,
+                    maxDate: "{{ today.strftime('%m/%d/%Y') }}",
+                    disabledDates: [],
+                    enabledDates: [],
+                    daysOfWeekDisabled: [],
+                    disabledTimeIntervals: [],
+                    disabledHours: [],
+                    enabledHours: []
+                },
+                display: {
+                    icons: {
+                        type: 'icons',
+                        time: 'bi-clock',
+                        date: 'bi-calendar',
+                        up: 'bi-arrow-up',
+                        down: 'bi-arrow-down',
+                        previous: 'bi-chevron-left',
+                        next: 'bi-chevron-right',
+                        today: 'bi-calendar-check',
+                        clear: 'bi-trash',
+                        close: 'bi-x-lg'
+                    },
+                    sideBySide: false,
+                    calendarWeeks: false,
+                    viewMode: 'calendar',
+                    toolbarPlacement: 'bottom',
+                    keepOpen: false,
+                    buttons: {
+                        today: false,
+                        clear: false,
+                        close: false
+                    },
+                    components: {
+                        calendar: true,
+                        date: true,
+                        month: true,
+                        year: true,
+                        decades: true,
+                        clock: false,
+                        hours: false,
+                        minutes: false,
+                        seconds: false,
+                        useTwentyfourHour: undefined
+                    },
+                    inline: false,
+                    theme: 'auto'
+                },
+            }
+            );
+            picker.actions.dates.setValue(picker.optionsStore.options.defaultDate);
             
-            $('.change-date').datepicker().on('changeDate', function(e) {
-                    window.location.href = `{{ url_for("daily_bp.daily") }}/${e.format(0, 'yyyymmdd')}/{% if orderBy == 'timerank' %}times{% else %}scores{% endif %}`;
-                });
+            const events = [ 'change.td' ];
+            document.querySelectorAll('#datetimepicker1').forEach((element) => {
+                events.forEach((listen) => {
+                    element.addEventListener(listen, (e) => {
+                        var selectedDate = `${String(e.detail.date.year)}${String(e.detail.date.month+1).padStart(2, 0)}${String(e.detail.date.date).padStart(2, 0)}`;
+                        window.location.href = `{{ url_for("daily_bp.daily") }}/${selectedDate}/{% if orderBy == 'timerank' %}times{% else %}scores{% endif %}`;
+                    })
+                })
+            }
+            );
         </script>
         {% if not nextDate > today %}
         <a href="{{ url_for('daily_bp.daily', datearg=nextDate.strftime('%Y%m%d'), rankby={'scorerank': 'scores', 'timerank': 'times'}[orderBy]) }}" title="Go to {{ nextDate.strftime('%A %B %d, %Y') }}"><i class="bi bi-caret-right-fill"></i></a>

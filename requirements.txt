@@ -11,7 +11,7 @@ click-didyoumean==0.3.0
 click-plugins==1.1.1
 click-repl==0.3.0
 fasteners==0.19
-Flask==3.0.0
+Flask==3.0.2
 Flask-Caching==2.1.0
 Flask-MySQLdb==2.0.0
 flask-paginate==2023.10.24
